@@ -93,3 +93,11 @@
 - **Changes Made:**
   - Modified landguardian/app/__init__.py: Added LandParcel import, init_db function with table creation and sample data insertion.
 - **Status:** Completed
+## Task: Implement Routes with Flask Blueprints
+
+- **Date:** 2025-10-11
+- **Description:** Created app/routes.py with Flask Blueprint for main routes and updated __init__.py to register it.
+- **Changes Made:**
+  - Created landguardian/app/routes.py: Added main_bp with dashboard, add, detail, and API routes.
+  - Modified landguardian/app/__init__.py: Added blueprint import and registration.
+- **Status:** Completed

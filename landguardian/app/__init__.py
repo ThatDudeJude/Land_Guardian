@@ -77,6 +77,7 @@ def create_app(config_class=Config):
 
     init_db()
 
-    # Register blueprints here (to be implemented later)
+    from app.routes import main_bp
+    app.register_blueprint(main_bp)
 
     return app
