@@ -170,3 +170,11 @@
   - Modified landguardian/app/models.py: Moved LandParcel definition to _define_models function.
   - Modified landguardian/app/__init__.py: Called models._define_models() after assigning db.
 - **Status:** Completed
+## Task: Fix Dashboard Template JSON Serialization Error
+
+- **Date:** 2025-10-11
+- **Description:** Resolved error in dashboard.html due to non-serializable datetime in parcels.
+- **Changes Made:**
+  - Modified landguardian/app/routes.py: Added parcels_data list for JSON serialization.
+  - Modified landguardian/app/templates/dashboard.html: Used parcels_data in initMap call.
+- **Status:** Completed

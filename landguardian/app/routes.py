@@ -19,7 +19,17 @@ def dashboard():
         'high_risk': high_risk_count,
         'average_health': round(average_health, 1)
     }
-    return render_template('dashboard.html', parcels=parcels, stats=stats)
+    parcels_data = [
+        {
+            'id': p.id,
+            'name': p.name,
+            'location': p.location,
+            'latitude': p.latitude,
+            'longitude': p.longitude,
+            'risk_level': p.risk_level
+        } for p in parcels
+    ]
+    return render_template('dashboard.html', parcels=parcels, stats=stats, parcels_data=parcels_data)
 
 @main_bp.route('/add', methods=['GET', 'POST'])
 def add_parcel():

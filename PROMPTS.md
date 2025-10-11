@@ -59,3 +59,6 @@ Explanation: Explained the circular import cause and fixed it by defining db loc
 ## Prompt: I am getting the following error when running the app using python landguardian/run.py: RuntimeError: The current Flask app is not registered with this 'SQLAlchemy' instance. Did you forget to call 'init_app', or did you create multiple 'SQLAlchemy' instances?. What could be the cause?
 
 Explanation: Explained the cause as having two SQLAlchemy instances, with the model using the unregistered one, and fixed it by defining the model in a function called after assigning the shared db instance.
+## Prompt: I'm getting the following error from 'landguardian/app/templates/dashboard.html' line 95. Why is that?
+
+Explanation: The error was caused by Jinja's tojson filter not being able to serialize datetime objects in the parcels data. Fixed by creating a parcels_data list of dicts without datetime fields and using that for JSON serialization.

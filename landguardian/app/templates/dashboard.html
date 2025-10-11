@@ -92,7 +92,7 @@
 {% endblock %} {% block scripts %}
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-      initMap({{ parcels|tojson }});
+      initMap({{ parcels_data|tojson }});
   });
 </script>
 {% endblock %}
