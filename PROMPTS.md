@@ -41,3 +41,6 @@ Explanation: Created base.html with HTML5 structure, meta tags, viewport, CDN im
 ## Prompt: Context: Dashboard.html template: Task: Create dashboard.html with: 1. Header section with title and "Add New Parcel" button 2. Interactive map section with Leaflet map, markers, popups 3. Statistics cards (3 columns) 4. Parcel grid with responsive cards, progress bars, risk badges Use Bootstrap grid system and ensure mobile responsiveness.
 
 Explanation: Created dashboard.html extending base.html with header, interactive Leaflet map with color-coded circular markers and popups, statistics cards, and responsive parcel grid with progress bars and risk indicators.
+## Prompt: Context: Add Parcel template. Task: Create add_parcel.html with a clean form containing: - Card-based layout centered on page - Form fields for name, location, lat/lon, soil, vegetation - 2-column layout for coordinates and scores - Submit and Cancel buttons - Proper labels and helper text Use Bootstrap grid system.
+
+Explanation: Created add_parcel.html extending base.html with centered card form, required and optional fields, 2-column Bootstrap grid, submit/cancel buttons, and helper text for scores.

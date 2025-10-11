@@ -123,3 +123,10 @@
 - **Changes Made:**
   - Created landguardian/app/templates/dashboard.html: Added header, Leaflet map with markers, stats cards, parcel grid, and JS.
 - **Status:** Completed
+## Task: Create Add Parcel Template
+
+- **Date:** 2025-10-11
+- **Description:** Implemented add_parcel.html with form for adding new land parcels.
+- **Changes Made:**
+  - Created landguardian/app/templates/add_parcel.html: Added card-based form with fields, grid layout, and buttons.
+- **Status:** Completed
