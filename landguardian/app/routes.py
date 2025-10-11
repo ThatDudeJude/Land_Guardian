@@ -26,7 +26,9 @@ def dashboard():
             'location': p.location,
             'latitude': p.latitude,
             'longitude': p.longitude,
-            'risk_level': p.risk_level
+            'risk_level': p.risk_level,
+            'health_score': p.health_score,
+            'risk_label': p.risk_label
         } for p in parcels
     ]
     return render_template('dashboard.html', parcels=parcels, stats=stats, parcels_data=parcels_data)

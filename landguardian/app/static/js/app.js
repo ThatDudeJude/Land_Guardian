@@ -17,10 +17,12 @@ const initMap = (parcels) => {
                 });
                 L.marker([parcel.latitude, parcel.longitude], {icon: marker}).addTo(map)
                     .bindPopup(`
-                        <strong>${parcel.name}</strong><br>
-                        Health Score: ${parcel.health_score}<br>
-                        <span class="badge bg-${color === 'green' ? 'success' : color === 'orange' ? 'warning' : 'danger'}">${parcel.risk_label}</span><br>
-                        <a href="/parcel/${parcel.id}" class="btn btn-sm btn-primary">View Details</a>
+                        <div style="padding: 5px;">
+                            <strong>${parcel.name}</strong><br><br>
+                            Health Score: ${parcel.health_score}<br><br>
+                            <span class="badge bg-${color === 'green' ? 'success' : color === 'orange' ? 'warning' : 'danger'}">${parcel.risk_label}</span><br><br>
+                            <a href="/parcel/${parcel.id}" class="btn btn-sm btn-primary">View Details</a>
+                        </div>
                     `);
             }
         });
