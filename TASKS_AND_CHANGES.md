@@ -233,3 +233,10 @@
   - Modified landguardian/app/static/js/app.js: Added createCustomIcon, updated MapManager, enhanced popup.
   - Modified landguardian/app/static/css/style.css: Updated pulse animation.
 - **Status:** Completed
+## Task: Add Missing Parcel Data for Map Markers
+
+- **Date:** 2025-10-11
+- **Description:** Fixed missing data in parcels_data for map marker popups.
+- **Changes Made:**
+  - Modified landguardian/app/routes.py: Added soil_quality, vegetation_cover, risk_color to parcels_data.
+- **Status:** Completed

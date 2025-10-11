@@ -80,3 +80,6 @@ Explanation: Enhanced map interactions by adding card-footer with View Details a
 ## Prompt: Context: Map UI. Task: Enhance the Leaflet markers with better visuals and animations for the focus feature: [details]
 
 Explanation: Enhanced Leaflet markers with createCustomIcon function for risk-based colors and active states, updated pulse animation in CSS, modified MapManager.focusOnParcel for marker animations, enhanced popup content with progress bar and actions, and updated initMap to use new icons and store riskLevel.
+## Prompt: Context: Providing parcel data for markers. Task: The parcel data passed to the 'landguardian/app/templates/dashboard.html' by @routes dashboard decorator does not container all the data required for @app.js in line 121 to 134. Fix this.
+
+Explanation: Added missing fields (soil_quality, vegetation_cover, risk_color) to the parcels_data dictionary in the dashboard route to ensure all required data is available for rendering map marker popups.
