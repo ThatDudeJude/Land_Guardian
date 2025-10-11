@@ -72,3 +72,10 @@
 - **Changes Made:**
   - Modified landguardian/app/__init__.py: Added imports, db instance, and create_app function with config loading and extension initialization.
 - **Status:** Completed
+## Task: Create Development Server Entry Point
+
+- **Date:** 2025-10-11
+- **Description:** Implemented run.py as the entry point for running the LandGuardian app in development mode.
+- **Changes Made:**
+  - Modified landguardian/run.py: Added imports, app creation, and run command with debug and port configuration.
+- **Status:** Completed
