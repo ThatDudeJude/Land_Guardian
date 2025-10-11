@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 from config import Config
+from app.models import LandParcel
 
 db = SQLAlchemy()
 
@@ -22,6 +23,59 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     db.init_app(app)
+
+    def init_db():
+        """
+        Initialize the database with tables and sample data.
+        """
+        with app.app_context():
+            db.create_all()
+            if LandParcel.query.count() == 0:
+                samples = [
+                    {
+                        'name': 'North Farm Field A',
+                        'location': 'North Farm',
+                        'latitude': 37.7749,
+                        'longitude': -122.4194,
+                        'soil_quality': 8,
+                        'vegetation_cover': 7
+                    },
+                    {
+                        'name': 'South Valley Plot',
+                        'location': 'South Valley',
+                        'latitude': 37.7510,
+                        'longitude': -122.4180,
+                        'soil_quality': 4,
+                        'vegetation_cover': 3
+                    },
+                    {
+                        'name': 'East Hills Section',
+                        'location': 'East Hills',
+                        'latitude': 37.7850,
+                        'longitude': -122.4100,
+                        'soil_quality': 6,
+                        'vegetation_cover': 5
+                    }
+                ]
+                for data in samples:
+                    health_score = LandParcel.calculate_health_score(data['soil_quality'], data['vegetation_cover'])
+                    risk_level, risk_label, risk_color = LandParcel.get_risk_category(health_score)
+                    parcel = LandParcel(
+                        name=data['name'],
+                        location=data['location'],
+                        latitude=data['latitude'],
+                        longitude=data['longitude'],
+                        soil_quality=data['soil_quality'],
+                        vegetation_cover=data['vegetation_cover'],
+                        health_score=health_score,
+                        risk_level=risk_level,
+                        risk_label=risk_label,
+                        risk_color=risk_color
+                    )
+                    db.session.add(parcel)
+                db.session.commit()
+
+    init_db()
 
     # Register blueprints here (to be implemented later)
 

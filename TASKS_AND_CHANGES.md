@@ -86,3 +86,10 @@
 - **Changes Made:**
   - Modified landguardian/app/models.py: Added LandParcel class with fields, __repr__, and business logic methods.
 - **Status:** Completed
+## Task: Add Database Initialization with Sample Data
+
+- **Date:** 2025-10-11
+- **Description:** Updated app/__init__.py to initialize the database with tables and sample land parcel data.
+- **Changes Made:**
+  - Modified landguardian/app/__init__.py: Added LandParcel import, init_db function with table creation and sample data insertion.
+- **Status:** Completed

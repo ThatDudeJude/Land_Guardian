@@ -26,3 +26,6 @@ Explanation: Created run.py with imports for create_app and DevelopmentConfig, a
 ## Prompt: Context: Database models. Task: Create app/models.py following industry standards: 1. Import db from app package (from app import db) 2. Create LandParcel model with these exact fields: [list] 3. Include __repr__ method for debugging 4. Add class methods for business logic: - calculate_health_score(cls, soil, vegetation) - get_risk_category(cls, score) Follow SQLAlchemy best practices with proper type definitions and constraints.
 
 Explanation: Created app/models.py with LandParcel model including all specified fields, __repr__ method, and class methods for calculating health score and determining risk category.
+## Prompt: Context: DB initialization with sample data. Task: Update app/__init__.py to include database initialization with sample data: 1. Add init_db() function inside create_app that: - Creates all tables using db.create_all() - Adds 3 sample land parcels with different risk levels - Uses proper application context - Handles existing data gracefully Sample data: [list] Call init_db() after db creation in create_app function.
+
+Explanation: Updated app/__init__.py with init_db function that creates database tables and inserts 3 sample land parcels with calculated health scores and risk categories, ensuring graceful handling of existing data.
