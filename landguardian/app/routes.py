@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, abort, flash
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, abort, flash, session
 from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
+import re
 
 from app import db
 from app.models import LandParcel, User
@@ -112,6 +113,19 @@ def register():
         organization = request.form.get('organization')
         role = request.form['role']
 
+        if len(password) < 8:
+            flash('Password must be at least 8 characters long', 'error')
+            return redirect(url_for('main.register'))
+
+        if not re.match(r'^(?=.*[A-Za-z])(?=.*\d)', password):
+            flash('Password must contain at least one letter and one number', 'error')
+            return redirect(url_for('main.register'))
+
+        common_passwords = ['password', '123456', 'qwerty', 'password123']
+        if password.lower() in common_passwords:
+            flash('Please choose a stronger password', 'error')
+            return redirect(url_for('main.register'))
+
         if password != confirm_password:
             flash('Passwords do not match', 'error')
             return redirect(url_for('main.register'))
@@ -132,6 +146,11 @@ def register():
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        attempts = session.get('login_attempts', 0)
+        if attempts >= 5:
+            flash('Too many login attempts. Please try again later.', 'error')
+            return redirect(url_for('main.login'))
+
         email = request.form['email']
         password = request.form['password']
         remember = 'remember' in request.form
@@ -141,8 +160,10 @@ def login():
             login_user(user, remember=remember)
             user.last_login = datetime.utcnow()
             db.session.commit()
+            session.pop('login_attempts', None)
             return redirect(url_for('main.dashboard'))
 
+        session['login_attempts'] = attempts + 1
         flash('Invalid email or password', 'error')
 
     return render_template('login.html')

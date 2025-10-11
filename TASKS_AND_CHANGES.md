@@ -275,3 +275,13 @@
   - Modified landguardian/app/routes.py: Updated dashboard, add_parcel, parcel_detail, API with user filtering and ownership checks.
   - Modified landguardian/app/__init__.py: Updated init_db to create default user and assign sample parcels.
 - **Status:** Completed
+## Task: Enhance Session Management and Security Features
+
+- **Date:** 2025-10-11
+- **Description:** Added comprehensive security features to LandGuardian.
+- **Changes Made:**
+  - Modified landguardian/config.py: Added session and security configurations.
+  - Modified landguardian/app/__init__.py: Configured Flask-Login and added security headers.
+  - Modified landguardian/app/models.py: Added database indexes.
+  - Modified landguardian/app/routes.py: Implemented password security and rate limiting.
+- **Status:** Completed

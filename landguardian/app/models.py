@@ -27,6 +27,8 @@ def _define_models():
 
         user = db.relationship('User', backref=db.backref('parcels', lazy=True))
 
+        __table_args__ = (db.Index('idx_parcel_user_id', 'user_id'),)
+
         def __repr__(self):
             return f'<LandParcel {self.name}>'
 
@@ -65,6 +67,8 @@ def _define_models():
         class User(db.Model):
 
             __tablename__ = 'user'
+
+            __table_args__ = (db.Index('idx_user_email', 'email'),)
 
             id = db.Column(db.Integer, primary_key=True)
 

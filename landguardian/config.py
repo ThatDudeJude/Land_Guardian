@@ -1,13 +1,17 @@
 import os
+from datetime import timedelta
 
 class Config:
     """
     Base configuration class for the LandGuardian Flask application.
     """
-    SECRET_KEY = os.urandom(24).hex()
+    SECRET_KEY = os.environ.get('SECRET_KEY') or os.urandom(24).hex()
     SQLALCHEMY_DATABASE_URI = 'sqlite:///land_data.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     TEMPLATES_AUTO_RELOAD = True
+    PERMANENT_SESSION_LIFETIME = timedelta(hours=24)
+    SESSION_COOKIE_SECURE = os.environ.get('FLASK_ENV') == 'production'
+    SESSION_COOKIE_HTTPONLY = True
 
 class DevelopmentConfig(Config):
     """

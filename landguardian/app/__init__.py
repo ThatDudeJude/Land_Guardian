@@ -1,6 +1,7 @@
-from flask import Flask
+from flask import Flask, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from datetime import timedelta
 
 from config import Config
 
@@ -29,6 +30,8 @@ def create_app(config_class=Config):
     db.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'main.login'
+    login_manager.remember_cookie_duration = timedelta(days=30)
+    login_manager.session_protection = 'strong'
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -100,5 +103,12 @@ def create_app(config_class=Config):
 
     from app.routes import main_bp
     app.register_blueprint(main_bp)
+
+    @app.after_request
+    def add_security_headers(response):
+        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['Content-Security-Policy'] = "default-src 'self'"
+        return response
 
     return app
