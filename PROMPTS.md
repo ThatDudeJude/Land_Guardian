@@ -83,3 +83,6 @@ Explanation: Enhanced Leaflet markers with createCustomIcon function for risk-ba
 ## Prompt: Context: Providing parcel data for markers. Task: The parcel data passed to the 'landguardian/app/templates/dashboard.html' by @routes dashboard decorator does not container all the data required for @app.js in line 121 to 134. Fix this.
 
 Explanation: Added missing fields (soil_quality, vegetation_cover, risk_color) to the parcels_data dictionary in the dashboard route to ensure all required data is available for rendering map marker popups.
+## Prompt: Context: User Authentication libraries and models. Task: Add user authentication to LandGuardian using Flask-Login. [details]
+
+Explanation: Updated requirements.txt with Flask-Login and email-validator, created User model with specified fields and Flask-Login methods, updated LandParcel with user_id foreign key and relationship, implemented password hashing with Werkzeug. Noted that database migration is required to add User table and update LandParcel.

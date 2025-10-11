@@ -240,3 +240,11 @@
 - **Changes Made:**
   - Modified landguardian/app/routes.py: Added soil_quality, vegetation_cover, risk_color to parcels_data.
 - **Status:** Completed
+## Task: Add User Authentication with Flask-Login
+
+- **Date:** 2025-10-11
+- **Description:** Implemented user authentication using Flask-Login.
+- **Changes Made:**
+  - Modified landguardian/requirements.txt: Added Flask-Login and email-validator.
+  - Modified landguardian/app/models.py: Added User model, updated LandParcel with user_id.
+- **Status:** Completed
