@@ -1,0 +1,41 @@
+body {
+  background-color: #f8f9fa;
+}
+
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.progress-bar {
+  border-radius: 10px;
+}
+
+.breadcrumb {
+  background-color: transparent;
+  padding: 0;
+}
+
+.list-group-item {
+  border: none;
+  padding: 0.5rem 0;
+}
+
+#map {
+  border-radius: 0.375rem;
+}
+
+.leaflet-popup-content {
+  margin: 0.5rem;
+  text-align: center;
+}
+
+.custom-marker {
+  /* Custom marker styling for map icons */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}

@@ -137,3 +137,10 @@
 - **Changes Made:**
   - Created landguardian/app/templates/parcel_detail.html: Added breadcrumb, details card, alerts, chart, and actions.
 - **Status:** Completed
+## Task: Create Custom Stylesheet
+
+- **Date:** 2025-10-11
+- **Description:** Implemented style.css with custom styles for LandGuardian.
+- **Changes Made:**
+  - Created landguardian/app/static/css/style.css: Added styles for background, cards, navbar, progress, breadcrumb, list, map, popup, and markers.
+- **Status:** Completed
