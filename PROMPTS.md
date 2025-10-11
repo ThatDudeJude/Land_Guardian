@@ -38,3 +38,6 @@ Explanation: Confirmed inconsistency and updated calculate_health_score in model
 ## Prompt: Context: Templates. Task: Create app/templates/base.html using industry standards: 1. HTML5 boilerplate with proper meta tags 2. Mobile-first responsive design viewport 3. CDN imports for Bootstrap 5, Leaflet.js, Chart.js 4. Block structure for content, scripts, and styles 5. Modern navbar with proper accessibility 6. Flash message handling 7. Static file paths using url_for() Use modern HTML5 standards and ensure proper template inheritance structure.
 
 Explanation: Created base.html with HTML5 structure, meta tags, viewport, CDN imports, accessible navbar, flash messages, Jinja2 blocks, and url_for for static files.
+## Prompt: Context: Dashboard.html template: Task: Create dashboard.html with: 1. Header section with title and "Add New Parcel" button 2. Interactive map section with Leaflet map, markers, popups 3. Statistics cards (3 columns) 4. Parcel grid with responsive cards, progress bars, risk badges Use Bootstrap grid system and ensure mobile responsiveness.
+
+Explanation: Created dashboard.html extending base.html with header, interactive Leaflet map with color-coded circular markers and popups, statistics cards, and responsive parcel grid with progress bars and risk indicators.

@@ -116,3 +116,10 @@
 - **Changes Made:**
   - Created landguardian/app/templates/base.html: Added HTML5 boilerplate, CDNs, navbar, flash handling, and blocks.
 - **Status:** Completed
+## Task: Create Dashboard Template
+
+- **Date:** 2025-10-11
+- **Description:** Implemented dashboard.html with map, stats, and parcel grid.
+- **Changes Made:**
+  - Created landguardian/app/templates/dashboard.html: Added header, Leaflet map with markers, stats cards, parcel grid, and JS.
+- **Status:** Completed

@@ -1,0 +1,121 @@
+{% extends "base.html" %} {% block title %}Dashboard - LandGuardian{% endblock
+%} {% block content %}
+<div class="row mb-4">
+  <div class="col">
+    <h1 class="display-4">Land Health Dashboard</h1>
+  </div>
+  <div class="col-auto">
+    <a href="{{ url_for('main.add_parcel') }}" class="btn btn-primary btn-lg"
+      >Add New Parcel</a
+    >
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div id="map" style="height: 400px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-4 mb-3">
+    <div class="card text-white bg-primary">
+      <div class="card-body">
+        <h5 class="card-title">Total Parcels</h5>
+        <p class="card-text display-4">{{ stats.total }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card text-white bg-danger">
+      <div class="card-body">
+        <h5 class="card-title">High Risk Areas</h5>
+        <p class="card-text display-4">{{ stats.high_risk }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card text-white bg-success">
+      <div class="card-body">
+        <h5 class="card-title">Average Health Score</h5>
+        <p class="card-text display-4">{{ stats.average_health }}%</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  {% for parcel in parcels %}
+  <div class="col-lg-6 col-xl-4 mb-4">
+    <div
+      class="card border-{% if parcel.risk_level == 'Low' %}success{% elif parcel.risk_level == 'Medium' %}warning{% else %}danger{% endif %}"
+    >
+      <div class="card-body">
+        <h5 class="card-title">{{ parcel.name }}</h5>
+        <p class="card-text">{{ parcel.location }}</p>
+        <div class="mb-2">
+          <small
+            >Soil: {{ parcel.soil_quality }}/10 | Vegetation: {{
+            parcel.vegetation_cover }}/10</small
+          >
+        </div>
+        <div class="progress mb-2">
+          <div
+            class="progress-bar bg-{% if parcel.risk_level == 'Low' %}success{% elif parcel.risk_level == 'Medium' %}warning{% else %}danger{% endif %}"
+            role="progressbar"
+            style="width: {{ parcel.health_score }}%"
+            aria-valuenow="{{ parcel.health_score }}"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            {{ parcel.health_score }}%
+          </div>
+        </div>
+        <span
+          class="badge bg-{% if parcel.risk_level == 'Low' %}success{% elif parcel.risk_level == 'Medium' %}warning{% else %}danger{% endif %}"
+          >{{ parcel.risk_label }}</span
+        >
+        <a
+          href="{{ url_for('main.parcel_detail', parcel_id=parcel.id) }}"
+          class="btn btn-outline-primary btn-sm float-end"
+          >View Details</a
+        >
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %} {% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const map = L.map('map').setView([37.7749, -122.4194], 10);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      const parcels = {{ parcels|tojson }};
+      parcels.forEach(parcel => {
+          if (parcel.latitude && parcel.longitude) {
+              const color = parcel.risk_level === 'Low' ? 'green' : parcel.risk_level === 'Medium' ? 'orange' : 'red';
+              const marker = L.divIcon({
+                  className: 'custom-marker',
+                  html: `<div style="background-color: ${color}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;"></div>`,
+                  iconSize: [20, 20],
+                  iconAnchor: [10, 10]
+              });
+              L.marker([parcel.latitude, parcel.longitude], {icon: marker}).addTo(map)
+                  .bindPopup(`
+                      <strong>${parcel.name}</strong><br>
+                      Health Score: ${parcel.health_score}<br>
+                      <span class="badge bg-${color === 'green' ? 'success' : color === 'orange' ? 'warning' : 'danger'}">${parcel.risk_label}</span><br>
+                      <a href="${window.location.origin}{{ url_for('main.parcel_detail', parcel_id=parcel.id) }}" class="btn btn-sm btn-primary">View Details</a>
+                  `);
+          }
+      });
+  });
+</script>
+{% endblock %}
