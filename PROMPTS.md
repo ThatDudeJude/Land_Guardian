@@ -44,3 +44,6 @@ Explanation: Created dashboard.html extending base.html with header, interactive
 ## Prompt: Context: Add Parcel template. Task: Create add_parcel.html with a clean form containing: - Card-based layout centered on page - Form fields for name, location, lat/lon, soil, vegetation - 2-column layout for coordinates and scores - Submit and Cancel buttons - Proper labels and helper text Use Bootstrap grid system.
 
 Explanation: Created add_parcel.html extending base.html with centered card form, required and optional fields, 2-column Bootstrap grid, submit/cancel buttons, and helper text for scores.
+## Prompt: Context: Land Parcel Details Template. Task: Create parcel_detail.html with: 1. Breadcrumb navigation 2. Two-column layout with details card, table, progress bar, risk badge, alerts 3. Health trend card with Chart.js line chart fetching from API 4. Recommended actions card with conditional items based on scores
+
+Explanation: Created parcel_detail.html extending base.html with breadcrumb, two-column layout, details card with color-coded header/table/progress bar/badge, risk-specific alerts, Chart.js line chart fetching trend data, and recommended actions based on soil/vegetation scores.

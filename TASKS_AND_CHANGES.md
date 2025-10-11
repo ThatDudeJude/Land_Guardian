@@ -130,3 +130,10 @@
 - **Changes Made:**
   - Created landguardian/app/templates/add_parcel.html: Added card-based form with fields, grid layout, and buttons.
 - **Status:** Completed
+## Task: Create Parcel Detail Template
+
+- **Date:** 2025-10-11
+- **Description:** Implemented parcel_detail.html with detailed view, chart, and actions.
+- **Changes Made:**
+  - Created landguardian/app/templates/parcel_detail.html: Added breadcrumb, details card, alerts, chart, and actions.
+- **Status:** Completed

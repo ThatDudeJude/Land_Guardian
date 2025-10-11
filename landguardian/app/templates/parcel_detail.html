@@ -1,0 +1,167 @@
+{% extends "base.html" %} {% block title %}{{ parcel.name }} - LandGuardian{%
+endblock %} {% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      {{ parcel.name }}
+    </li>
+  </ol>
+</nav>
+
+<div class="row">
+  <div class="col-lg-8">
+    <div
+      class="card border-{% if parcel.risk_level == 'Low' %}success{% elif parcel.risk_level == 'Medium' %}warning{% else %}danger{% endif %}"
+    >
+      <div
+        class="card-header bg-{% if parcel.risk_level == 'Low' %}success{% elif parcel.risk_level == 'Medium' %}warning{% else %}danger{% endif %} text-white"
+      >
+        <h4 class="card-title mb-0">{{ parcel.name }}</h4>
+      </div>
+      <div class="card-body">
+        <table class="table table-borderless">
+          <tbody>
+            <tr>
+              <th scope="row">Location</th>
+              <td>{{ parcel.location }}</td>
+            </tr>
+            <tr>
+              <th scope="row">Soil Quality</th>
+              <td>{{ parcel.soil_quality }}/10</td>
+            </tr>
+            <tr>
+              <th scope="row">Vegetation Cover</th>
+              <td>{{ parcel.vegetation_cover }}/10</td>
+            </tr>
+            <tr>
+              <th scope="row">Health Score</th>
+              <td>
+                <div class="progress">
+                  <div
+                    class="progress-bar bg-{% if parcel.risk_level == 'Low' %}success{% elif parcel.risk_level == 'Medium' %}warning{% else %}danger{% endif %}"
+                    role="progressbar"
+                    style="width: {{ parcel.health_score }}%"
+                    aria-valuenow="{{ parcel.health_score }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  >
+                    {{ parcel.health_score }}%
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Risk Level</th>
+              <td>
+                <span
+                  class="badge bg-{% if parcel.risk_level == 'Low' %}success{% elif parcel.risk_level == 'Medium' %}warning{% else %}danger{% endif %}"
+                  >{{ parcel.risk_label }}</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Last Updated</th>
+              <td>{{ parcel.last_updated.strftime('%Y-%m-%d %H:%M') }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {% if parcel.risk_level == 'High' %}
+    <div class="alert alert-danger mt-3" role="alert">
+      <strong>High Risk Alert:</strong> This parcel requires immediate
+      attention. Implement soil conservation practices and vegetation
+      restoration to prevent further degradation.
+    </div>
+    {% elif parcel.risk_level == 'Medium' %}
+    <div class="alert alert-warning mt-3" role="alert">
+      <strong>Medium Risk Notice:</strong> Monitor this parcel closely. Regular
+      soil testing and maintenance practices are recommended to maintain health.
+    </div>
+    {% else %}
+    <div class="alert alert-success mt-3" role="alert">
+      <strong>Low Risk Status:</strong> This parcel is in good health. Continue
+      current practices and document successful management strategies.
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card mb-3">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Health Trend (7 Days)</h5>
+      </div>
+      <div class="card-body">
+        <canvas id="healthChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Recommended Actions</h5>
+      </div>
+      <div class="card-body">
+        <ul class="list-unstyled">
+          {% if parcel.soil_quality <= 4 %}
+          <li>✓ Implement soil conservation practices</li>
+          <li>✓ Start cover cropping program</li>
+          <li>✓ Add organic matter to soil</li>
+          {% elif parcel.soil_quality <= 7 %}
+          <li>✓ Conduct regular soil testing</li>
+          <li>✓ Maintain current soil management practices</li>
+          {% else %}
+          <li>✓ Document successful soil management practices</li>
+          {% endif %} {% if parcel.vegetation_cover <= 4 %}
+          <li>✓ Plant native vegetation species</li>
+          <li>✓ Implement erosion control measures</li>
+          <li>✓ Monitor vegetation growth regularly</li>
+          {% elif parcel.vegetation_cover <= 7 %}
+          <li>✓ Maintain current vegetation cover</li>
+          <li>✓ Monitor for invasive species</li>
+          {% else %}
+          <li>✓ Document successful vegetation management</li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    fetch('{{ url_for("main.health_trend", parcel_id=parcel.id) }}')
+      .then((response) => response.json())
+      .then((data) => {
+        const ctx = document.getElementById('healthChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: data.map((d) => d.date),
+            datasets: [
+              {
+                label: 'Health Score',
+                data: data.map((d) => d.score),
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+              },
+            },
+          },
+        });
+      })
+      .catch((error) => console.error('Error fetching trend data:', error));
+  });
+</script>
+{% endblock %}
