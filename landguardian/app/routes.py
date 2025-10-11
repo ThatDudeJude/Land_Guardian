@@ -8,11 +8,12 @@ from app.models import LandParcel, User
 main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
+@login_required
 def dashboard():
     """
     Dashboard route displaying land parcel statistics and list.
     """
-    parcels = LandParcel.query.all()
+    parcels = LandParcel.query.filter_by(user_id=current_user.id).all()
     total_parcels = len(parcels)
     high_risk_count = sum(1 for p in parcels if p.risk_level == 'High')
     average_health = sum(p.health_score for p in parcels) / total_parcels if total_parcels > 0 else 0
@@ -65,7 +66,8 @@ def add_parcel():
             health_score=health_score,
             risk_level=risk_level,
             risk_label=risk_label,
-            risk_color=risk_color
+            risk_color=risk_color,
+            user_id=current_user.id
         )
         db.session.add(parcel)
         db.session.commit()
@@ -73,19 +75,25 @@ def add_parcel():
     return render_template('add_parcel.html')
 
 @main_bp.route('/parcel/<int:parcel_id>')
+@login_required
 def parcel_detail(parcel_id):
     """
     Route for displaying individual parcel details.
     """
     parcel = LandParcel.query.get_or_404(parcel_id)
+    if parcel.user_id != current_user.id:
+        abort(404)
     return render_template('parcel_detail.html', parcel=parcel)
 
 @main_bp.route('/api/health-trend/<int:parcel_id>')
+@login_required
 def health_trend(parcel_id):
     """
     API endpoint for parcel health trend data.
     """
     parcel = LandParcel.query.get_or_404(parcel_id)
+    if parcel.user_id != current_user.id:
+        abort(404)
     # Dummy trend data for demonstration
     trend = [
         {'date': '2023-01', 'score': max(0, parcel.health_score - 5)},

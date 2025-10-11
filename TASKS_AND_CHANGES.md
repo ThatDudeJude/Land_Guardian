@@ -267,3 +267,11 @@
   - Created landguardian/app/templates/profile.html: Profile management.
   - Created landguardian/app/templates/change_password.html: Password change form.
 - **Status:** Completed
+## Task: Implement User-Specific Data Access and Role-Based Authorization
+
+- **Date:** 2025-10-11
+- **Description:** Added user-specific data filtering and basic authorization.
+- **Changes Made:**
+  - Modified landguardian/app/routes.py: Updated dashboard, add_parcel, parcel_detail, API with user filtering and ownership checks.
+  - Modified landguardian/app/__init__.py: Updated init_db to create default user and assign sample parcels.
+- **Status:** Completed

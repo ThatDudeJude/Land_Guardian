@@ -42,7 +42,15 @@ def create_app(config_class=Config):
         with app.app_context():
             db.create_all()
             from app.models import LandParcel
+            from app.models import User
+            if User.query.count() == 0:
+                default_user = User(email='demo@example.com', name='Demo User', role='farmer')
+                default_user.set_password('demo')
+                db.session.add(default_user)
+                db.session.commit()
+
             if LandParcel.query.count() == 0:
+                default_user = User.query.filter_by(email='demo@example.com').first()
                 samples = [
                     {
                         'name': 'North Farm Field A',
@@ -82,7 +90,8 @@ def create_app(config_class=Config):
                         health_score=health_score,
                         risk_level=risk_level,
                         risk_label=risk_label,
-                        risk_color=risk_color
+                        risk_color=risk_color,
+                        user_id=default_user.id
                     )
                     db.session.add(parcel)
                 db.session.commit()

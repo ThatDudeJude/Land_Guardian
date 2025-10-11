@@ -92,3 +92,6 @@ Explanation: Configured Flask-Login in __init__.py with LoginManager, user_loade
 ## Prompt: Context: Templates for authentication. Tasks: Create authentication templates with professional styling: [details]
 
 Explanation: Updated base.html with conditional navigation bar showing login/register or dashboard/add/profile based on authentication status, displaying user name and role, created register.html with comprehensive registration form including validation feedback, login.html with simple form and remember me, profile.html with editable user info and account statistics, change_password.html with password change form, all with Bootstrap styling, accessibility labels, mobile responsiveness, and consistent branding.
+## Prompt: Context: User specific data. Task: Implement user-specific data access and role-based authorization: [details]
+
+Explanation: Updated all database queries to filter by current_user.id, modified add_parcel to automatically assign parcels to current_user, added ownership checks to parcel_detail and API routes returning 404 for unauthorized access, updated sample data initialization to create default user and assign existing parcels to it, implemented basic role-based permissions where farmers have full CRUD on their parcels.
