@@ -89,3 +89,6 @@ Explanation: Updated requirements.txt with Flask-Login and email-validator, crea
 ## Prompt: Context: Authentication configuration and routes. Task: Configure Flask-Login and create authentication routes: [details]
 
 Explanation: Configured Flask-Login in __init__.py with LoginManager, user_loader, and login_view, created authentication routes in routes.py including register, login, logout, profile, change-password with form validation, error handling, and flash messages, applied login_required to protected routes like add_parcel.
+## Prompt: Context: Templates for authentication. Tasks: Create authentication templates with professional styling: [details]
+
+Explanation: Updated base.html with conditional navigation bar showing login/register or dashboard/add/profile based on authentication status, displaying user name and role, created register.html with comprehensive registration form including validation feedback, login.html with simple form and remember me, profile.html with editable user info and account statistics, change_password.html with password change form, all with Bootstrap styling, accessibility labels, mobile responsiveness, and consistent branding.

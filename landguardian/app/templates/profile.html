@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - LandGuardian{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title mb-0">Profile Information</h2>
+      </div>
+      <div class="card-body">
+        <form method="post">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" value="{{ current_user.email }}" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ current_user.name }}" required>
+          </div>
+          <div class="mb-3">
+            <label for="organization" class="form-label">Organization</label>
+            <input type="text" class="form-control" id="organization" name="organization" value="{{ current_user.organization or '' }}">
+          </div>
+          <div class="mb-3">
+            <label for="role" class="form-label">Role</label>
+            <select class="form-select" id="role" name="role" required>
+              <option value="farmer" {% if current_user.role == 'farmer' %}selected{% endif %}>Farmer</option>
+              <option value="researcher" {% if current_user.role == 'researcher' %}selected{% endif %}>Researcher</option>
+              <option value="policymaker" {% if current_user.role == 'policymaker' %}selected{% endif %}>Policymaker</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+        <hr>
+        <a href="{{ url_for('main.change_password') }}" class="btn btn-secondary">Change Password</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title mb-0">Account Statistics</h3>
+      </div>
+      <div class="card-body">
+        <p><strong>Parcels:</strong> {{ current_user.parcels|length }}</p>
+        <p><strong>Joined:</strong> {{ current_user.created_at.strftime('%Y-%m-%d') }}</p>
+        <p><strong>Last Login:</strong> {{ current_user.last_login.strftime('%Y-%m-%d %H:%M') if current_user.last_login else 'Never' }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
