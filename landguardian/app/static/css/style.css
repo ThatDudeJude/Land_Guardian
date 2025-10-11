@@ -39,3 +39,14 @@ body {
   /* Custom marker styling for map icons */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
+.parcel-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.parcel-card.active {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}

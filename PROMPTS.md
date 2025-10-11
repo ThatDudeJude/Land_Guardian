@@ -62,3 +62,9 @@ Explanation: Explained the cause as having two SQLAlchemy instances, with the mo
 ## Prompt: I'm getting the following error from 'landguardian/app/templates/dashboard.html' line 95. Why is that?
 
 Explanation: The error was caused by Jinja's tojson filter not being able to serialize datetime objects in the parcels data. Fixed by creating a parcels_data list of dicts without datetime fields and using that for JSON serialization.
+## Prompt: The parcels in the marker defined in line 18 of @app.js do not seem to have any data for health_score and risk_label. Update the dashboard decorator in @routes.py to include this information.
+
+Explanation: Added health_score and risk_label fields to the parcels_data dictionary in the dashboard route to provide the required data for displaying in map marker popups.
+## Prompt: Context: Styling of markers on map. Issue: The styling of markers in line 14, 20, 21, 22, 23 in @/landguardian/app/static/js/app.js makes them cramped. Task: Increase the spacing between elements to minimize the crowding of elements.
+
+Explanation: Improved spacing in the map marker popup by wrapping content in a div with padding and adding extra <br> tags between elements.

@@ -178,3 +178,26 @@
   - Modified landguardian/app/routes.py: Added parcels_data list for JSON serialization.
   - Modified landguardian/app/templates/dashboard.html: Used parcels_data in initMap call.
 - **Status:** Completed
+## Task: Add Missing Data to Parcels for Map Markers
+
+- **Date:** 2025-10-11
+- **Description:** Added health_score and risk_label to parcels_data for map marker popups.
+- **Changes Made:**
+  - Modified landguardian/app/routes.py: Included health_score and risk_label in parcels_data.
+- **Status:** Completed
+## Task: Improve Map Marker Popup Spacing
+
+- **Date:** 2025-10-11
+- **Description:** Enhanced spacing in map marker popups to reduce crowding.
+- **Changes Made:**
+  - Modified landguardian/app/static/js/app.js: Added padding and line breaks to popup content.
+- **Status:** Completed
+## Task: Add Interactive Map Focus Functionality
+
+- **Date:** 2025-10-11
+- **Description:** Implemented interactive map focus for parcel cards on dashboard.
+- **Changes Made:**
+  - Modified landguardian/app/templates/dashboard.html: Added data attributes, parcel-card class, and click event listeners.
+  - Modified landguardian/app/static/js/app.js: Updated initMap to store markers, added focusOnParcel function.
+  - Modified landguardian/app/static/css/style.css: Added hover and active styles for parcel cards.
+- **Status:** Completed

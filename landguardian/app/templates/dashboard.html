@@ -52,7 +52,11 @@
   {% for parcel in parcels %}
   <div class="col-lg-6 col-xl-4 mb-4">
     <div
-      class="card border-{% if parcel.risk_level == 'Low' %}success{% elif parcel.risk_level == 'Medium' %}warning{% else %}danger{% endif %}"
+      class="card parcel-card border-{% if parcel.risk_level == 'Low' %}success{% elif parcel.risk_level == 'Medium' %}warning{% else %}danger{% endif %}"
+      data-lat="{{ parcel.latitude }}"
+      data-lng="{{ parcel.longitude }}"
+      data-id="{{ parcel.id }}"
+      style="cursor: pointer"
     >
       <div class="card-body">
         <h5 class="card-title">{{ parcel.name }}</h5>
@@ -93,6 +97,16 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
       initMap({{ parcels_data|tojson }});
+      document.querySelectorAll('.parcel-card').forEach(card => {
+          card.addEventListener('click', function() {
+              const lat = parseFloat(this.dataset.lat);
+              const lng = parseFloat(this.dataset.lng);
+              const id = this.dataset.id;
+              focusOnParcel(lat, lng, id);
+              document.querySelectorAll('.parcel-card').forEach(c => c.classList.remove('active'));
+              this.classList.add('active');
+          });
+      });
   });
 </script>
 {% endblock %}

@@ -6,6 +6,8 @@ const initMap = (parcels) => {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
+        window.parcelMarkers = {};
+
         parcels.forEach(parcel => {
             if (parcel.latitude && parcel.longitude) {
                 const color = parcel.risk_level === 'Low' ? 'green' : parcel.risk_level === 'Medium' ? 'orange' : 'red';
@@ -15,7 +17,7 @@ const initMap = (parcels) => {
                     iconSize: [20, 20],
                     iconAnchor: [10, 10]
                 });
-                L.marker([parcel.latitude, parcel.longitude], {icon: marker}).addTo(map)
+                const mapMarker = L.marker([parcel.latitude, parcel.longitude], {icon: marker}).addTo(map)
                     .bindPopup(`
                         <div style="padding: 5px;">
                             <strong>${parcel.name}</strong><br><br>
@@ -24,10 +26,27 @@ const initMap = (parcels) => {
                             <a href="/parcel/${parcel.id}" class="btn btn-sm btn-primary">View Details</a>
                         </div>
                     `);
+                window.parcelMarkers[parcel.id] = mapMarker;
             }
         });
     } catch (error) {
         console.error('Error initializing map:', error);
+    }
+};
+
+// Focus on parcel function
+const focusOnParcel = (lat, lng, parcelId) => {
+    try {
+        const map = window.map || document.querySelector('#map')._leaflet_map; // Assuming map is global or accessible
+        if (map) {
+            map.setView([lat, lng], 15, {animate: true, duration: 1});
+            map.closePopup();
+            if (window.parcelMarkers[parcelId]) {
+                window.parcelMarkers[parcelId].openPopup();
+            }
+        }
+    } catch (error) {
+        console.error('Error focusing on parcel:', error);
     }
 };
 
