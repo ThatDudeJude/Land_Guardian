@@ -58,3 +58,10 @@
   - Created file: landguardian/requirements.txt (copied from root requirements.txt)
   - Created file: landguardian/.gitignore (with Python/Flask ignore patterns)
 - **Status:** Completed
+## Task: Create Flask Configuration Classes
+
+- **Date:** 2025-10-11
+- **Description:** Implemented config.py with base Config class and environment-specific subclasses for LandGuardian.
+- **Changes Made:**
+  - Modified landguardian/config.py: Added Config, DevelopmentConfig, and ProductionConfig classes with specified attributes.
+- **Status:** Completed
