@@ -201,3 +201,11 @@
   - Modified landguardian/app/static/js/app.js: Updated initMap to store markers, added focusOnParcel function.
   - Modified landguardian/app/static/css/style.css: Added hover and active styles for parcel cards.
 - **Status:** Completed
+## Task: Implement Complete MapManager for Interactive Map Focus
+
+- **Date:** 2025-10-11
+- **Description:** Implemented the full MapManager object and updated related code for enhanced map interaction.
+- **Changes Made:**
+  - Modified landguardian/app/static/js/app.js: Added MapManager object with init, focusOnParcel, setActiveParcel, resetMapView methods, updated initMap.
+  - Modified landguardian/app/templates/dashboard.html: Updated script with new event listeners for cards, buttons, and reset.
+- **Status:** Completed

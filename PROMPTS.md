@@ -68,3 +68,6 @@ Explanation: Added health_score and risk_label fields to the parcels_data dictio
 ## Prompt: Context: Styling of markers on map. Issue: The styling of markers in line 14, 20, 21, 22, 23 in @/landguardian/app/static/js/app.js makes them cramped. Task: Increase the spacing between elements to minimize the crowding of elements.
 
 Explanation: Improved spacing in the map marker popup by wrapping content in a div with padding and adding extra <br> tags between elements.
+## Prompt: Context: UI/UX map focus using js. Task: Implement the complete JavaScript functionality for the map focus feature in app/static/js/app.js: [details]
+
+Explanation: Implemented the window.MapManager object with all specified methods, updated initMap to initialize MapManager and store markers, and updated dashboard.html script with event listeners for card clicks, focus buttons, and reset map view.

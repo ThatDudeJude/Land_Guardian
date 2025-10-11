@@ -1,12 +1,76 @@
+// Global Map Manager Object
+window.MapManager = {
+    map: null,
+    parcelMarkers: {},
+    activeParcelId: null,
+
+    init: function(mapInstance) {
+        this.map = mapInstance;
+    },
+
+    focusOnParcel: function(lat, lng, parcelId) {
+        try {
+            // Smooth fly to location
+            this.map.flyTo([lat, lng], 15, {
+                duration: 1.5
+            });
+
+            // Close other popups and open target popup
+            Object.values(this.parcelMarkers).forEach(marker => {
+                marker.closePopup();
+            });
+
+            if (this.parcelMarkers[parcelId]) {
+                setTimeout(() => {
+                    this.parcelMarkers[parcelId].openPopup();
+                }, 1600);
+            }
+
+            // Update active state
+            this.setActiveParcel(parcelId);
+        } catch (error) {
+            console.error('Error focusing on parcel:', error);
+        }
+    },
+
+    setActiveParcel: function(parcelId) {
+        // Remove active class from all cards
+        document.querySelectorAll('.parcel-card').forEach(card => {
+            card.classList.remove('active');
+        });
+
+        // Add active class to clicked card
+        const activeCard = document.querySelector(`[data-id="${parcelId}"]`);
+        if (activeCard) {
+            activeCard.classList.add('active');
+        }
+
+        this.activeParcelId = parcelId;
+    },
+
+    resetMapView: function() {
+        try {
+            this.map.flyTo([37.7749, -122.4194], 12, { duration: 1 });
+            Object.values(this.parcelMarkers).forEach(marker => {
+                marker.closePopup();
+            });
+            this.setActiveParcel(null);
+        } catch (error) {
+            console.error('Error resetting map view:', error);
+        }
+    }
+};
+
 // Map initialization function
 const initMap = (parcels) => {
     try {
-        const map = L.map('map').setView([37.7749, -122.4194], 10);
+        const map = L.map('map').setView([37.7749, -122.4194], 12);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        window.parcelMarkers = {};
+        // Initialize MapManager
+        window.MapManager.init(map);
 
         parcels.forEach(parcel => {
             if (parcel.latitude && parcel.longitude) {
@@ -26,27 +90,11 @@ const initMap = (parcels) => {
                             <a href="/parcel/${parcel.id}" class="btn btn-sm btn-primary">View Details</a>
                         </div>
                     `);
-                window.parcelMarkers[parcel.id] = mapMarker;
+                window.MapManager.parcelMarkers[parcel.id] = mapMarker;
             }
         });
     } catch (error) {
         console.error('Error initializing map:', error);
-    }
-};
-
-// Focus on parcel function
-const focusOnParcel = (lat, lng, parcelId) => {
-    try {
-        const map = window.map || document.querySelector('#map')._leaflet_map; // Assuming map is global or accessible
-        if (map) {
-            map.setView([lat, lng], 15, {animate: true, duration: 1});
-            map.closePopup();
-            if (window.parcelMarkers[parcelId]) {
-                window.parcelMarkers[parcelId].openPopup();
-            }
-        }
-    } catch (error) {
-        console.error('Error focusing on parcel:', error);
     }
 };
 

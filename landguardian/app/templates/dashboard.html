@@ -97,15 +97,35 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
       initMap({{ parcels_data|tojson }});
+
+      // Card click events
       document.querySelectorAll('.parcel-card').forEach(card => {
           card.addEventListener('click', function() {
               const lat = parseFloat(this.dataset.lat);
               const lng = parseFloat(this.dataset.lng);
               const id = this.dataset.id;
-              focusOnParcel(lat, lng, id);
-              document.querySelectorAll('.parcel-card').forEach(c => c.classList.remove('active'));
-              this.classList.add('active');
+              if (lat && lng) {
+                  window.MapManager.focusOnParcel(lat, lng, id);
+              }
           });
+      });
+
+      // Focus button events
+      document.querySelectorAll('.focus-map-btn').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+              e.stopPropagation(); // Prevent card click event
+              const lat = parseFloat(this.dataset.lat);
+              const lng = parseFloat(this.dataset.lng);
+              const id = this.dataset.id;
+              if (lat && lng) {
+                  window.MapManager.focusOnParcel(lat, lng, id);
+              }
+          });
+      });
+
+      // Reset map view button
+      document.getElementById('resetMapView')?.addEventListener('click', function() {
+          window.MapManager.resetMapView();
       });
   });
 </script>
