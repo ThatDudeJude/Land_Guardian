@@ -101,3 +101,11 @@
   - Created landguardian/app/routes.py: Added main_bp with dashboard, add, detail, and API routes.
   - Modified landguardian/app/__init__.py: Added blueprint import and registration.
 - **Status:** Completed
+## Task: Fix Health Score Calculation Inconsistency
+
+- **Date:** 2025-10-11
+- **Description:** Resolved inconsistency in health score calculation between model and routes.
+- **Changes Made:**
+  - Modified landguardian/app/models.py: Updated calculate_health_score to use weighted formula.
+  - Modified landguardian/app/routes.py: Changed add_parcel to use the model's method.
+- **Status:** Completed

@@ -25,7 +25,7 @@ class LandParcel(db.Model):
     @classmethod
     def calculate_health_score(cls, soil, vegetation):
         """
-        Calculate health score from soil quality and vegetation cover.
+        Calculate health score from soil quality and vegetation cover using weighted formula.
 
         Args:
             soil (int): Soil quality score (1-10)
@@ -34,7 +34,7 @@ class LandParcel(db.Model):
         Returns:
             int: Health score (0-100)
         """
-        return int((soil + vegetation) / 2 * 10)
+        return int((soil * 0.6 + vegetation * 0.4) * 10)
 
     @classmethod
     def get_risk_category(cls, score):

@@ -35,7 +35,7 @@ def add_parcel():
         longitude = float(request.form.get('longitude') or 0)
         soil_quality = int(request.form['soil_quality'])
         vegetation_cover = int(request.form['vegetation_cover'])
-        health_score = int((soil_quality * 0.6 + vegetation_cover * 0.4) * 10)
+        health_score = LandParcel.calculate_health_score(soil_quality, vegetation_cover)
         risk_level, risk_label, risk_color = LandParcel.get_risk_category(health_score)
         parcel = LandParcel(
             name=name,
