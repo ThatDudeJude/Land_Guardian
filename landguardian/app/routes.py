@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, abort
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, abort, flash
+from flask_login import login_user, logout_user, login_required, current_user
+from datetime import datetime
 
 from app import db
-from app.models import LandParcel
+from app.models import LandParcel, User
 
 main_bp = Blueprint('main', __name__)
 
@@ -37,6 +39,7 @@ def dashboard():
     return render_template('dashboard.html', parcels=parcels, stats=stats, parcels_data=parcels_data)
 
 @main_bp.route('/add', methods=['GET', 'POST'])
+@login_required
 def add_parcel():
     """
     Route for adding new land parcels.
@@ -90,3 +93,90 @@ def health_trend(parcel_id):
         {'date': '2023-03', 'score': parcel.health_score},
     ]
     return jsonify(trend)
+
+@main_bp.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        name = request.form['name']
+        organization = request.form.get('organization')
+        role = request.form['role']
+
+        if password != confirm_password:
+            flash('Passwords do not match', 'error')
+            return redirect(url_for('main.register'))
+
+        if User.query.filter_by(email=email).first():
+            flash('Email already registered', 'error')
+            return redirect(url_for('main.register'))
+
+        user = User(email=email, name=name, organization=organization, role=role)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Registration successful', 'success')
+        return redirect(url_for('main.login'))
+
+    return render_template('register.html')
+
+@main_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        remember = 'remember' in request.form
+
+        user = User.query.filter_by(email=email).first()
+        if user and user.check_password(password):
+            login_user(user, remember=remember)
+            user.last_login = datetime.utcnow()
+            db.session.commit()
+            return redirect(url_for('main.dashboard'))
+
+        flash('Invalid email or password', 'error')
+
+    return render_template('login.html')
+
+@main_bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('main.login'))
+
+@main_bp.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    if request.method == 'POST':
+        current_user.name = request.form['name']
+        current_user.organization = request.form.get('organization')
+        current_user.role = request.form['role']
+        db.session.commit()
+        flash('Profile updated', 'success')
+        return redirect(url_for('main.profile'))
+
+    return render_template('profile.html')
+
+@main_bp.route('/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    if request.method == 'POST':
+        old_password = request.form['old_password']
+        new_password = request.form['new_password']
+        confirm_password = request.form['confirm_password']
+
+        if not current_user.check_password(old_password):
+            flash('Old password is incorrect', 'error')
+            return redirect(url_for('main.change_password'))
+
+        if new_password != confirm_password:
+            flash('New passwords do not match', 'error')
+            return redirect(url_for('main.change_password'))
+
+        current_user.set_password(new_password)
+        db.session.commit()
+        flash('Password changed successfully', 'success')
+        return redirect(url_for('main.profile'))
+
+    return render_template('change_password.html')

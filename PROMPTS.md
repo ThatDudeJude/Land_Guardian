@@ -86,3 +86,6 @@ Explanation: Added missing fields (soil_quality, vegetation_cover, risk_color) t
 ## Prompt: Context: User Authentication libraries and models. Task: Add user authentication to LandGuardian using Flask-Login. [details]
 
 Explanation: Updated requirements.txt with Flask-Login and email-validator, created User model with specified fields and Flask-Login methods, updated LandParcel with user_id foreign key and relationship, implemented password hashing with Werkzeug. Noted that database migration is required to add User table and update LandParcel.
+## Prompt: Context: Authentication configuration and routes. Task: Configure Flask-Login and create authentication routes: [details]
+
+Explanation: Configured Flask-Login in __init__.py with LoginManager, user_loader, and login_view, created authentication routes in routes.py including register, login, logout, profile, change-password with form validation, error handling, and flash messages, applied login_required to protected routes like add_parcel.

@@ -248,3 +248,11 @@
   - Modified landguardian/requirements.txt: Added Flask-Login and email-validator.
   - Modified landguardian/app/models.py: Added User model, updated LandParcel with user_id.
 - **Status:** Completed
+## Task: Configure Flask-Login and Create Authentication Routes
+
+- **Date:** 2025-10-11
+- **Description:** Implemented user authentication with Flask-Login.
+- **Changes Made:**
+  - Modified landguardian/app/__init__.py: Added LoginManager configuration and user_loader.
+  - Modified landguardian/app/routes.py: Added auth routes and login_required decorators.
+- **Status:** Completed
