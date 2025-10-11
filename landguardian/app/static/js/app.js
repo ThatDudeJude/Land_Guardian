@@ -72,6 +72,9 @@ const initMap = (parcels) => {
         // Initialize MapManager
         window.MapManager.init(map);
 
+        // Store parcels for keyboard navigation
+        window.parcelData = parcels;
+
         parcels.forEach(parcel => {
             if (parcel.latitude && parcel.longitude) {
                 const color = parcel.risk_level === 'Low' ? 'green' : parcel.risk_level === 'Medium' ? 'orange' : 'red';

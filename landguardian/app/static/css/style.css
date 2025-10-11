@@ -56,6 +56,11 @@ body {
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
+.parcel-card.selected {
+  border-color: #ffc107;
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.25);
+}
+
 .focus-map-btn {
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
