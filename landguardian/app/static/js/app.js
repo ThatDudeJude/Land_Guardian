@@ -1,3 +1,30 @@
+// Custom icon creation function
+function createCustomIcon(riskLevel, isActive = false) {
+    const colors = {
+        'low': '#28a745',
+        'medium': '#ffc107',
+        'high': '#dc3545'
+    };
+
+    const size = isActive ? 25 : 20;
+    const pulse = isActive ? 'pulse 2s infinite' : 'none';
+
+    return L.divIcon({
+        html: `<div style="
+            background-color: ${colors[riskLevel]};
+            width: ${size}px;
+            height: ${size}px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            animation: ${pulse};
+        "></div>`,
+        className: 'custom-marker',
+        iconSize: [size, size],
+        iconAnchor: [size/2, size/2]
+    });
+}
+
 // Global Map Manager Object
 window.MapManager = {
     map: null,
@@ -10,19 +37,29 @@ window.MapManager = {
 
     focusOnParcel: function(lat, lng, parcelId) {
         try {
-            // Smooth fly to location
-            this.map.flyTo([lat, lng], 15, {
-                duration: 1.5
-            });
+            // Reset previous active marker
+            if (this.activeParcelId && this.parcelMarkers[this.activeParcelId]) {
+                const prevMarker = this.parcelMarkers[this.activeParcelId];
+                const riskLevel = prevMarker.options.riskLevel;
+                prevMarker.setIcon(createCustomIcon(riskLevel, false));
+            }
 
-            // Close other popups and open target popup
+            // Fly to location
+            this.map.flyTo([lat, lng], 15, { duration: 1.5 });
+
+            // Close other popups
             Object.values(this.parcelMarkers).forEach(marker => {
                 marker.closePopup();
             });
 
+            // Animate target marker
             if (this.parcelMarkers[parcelId]) {
+                const marker = this.parcelMarkers[parcelId];
+                const riskLevel = marker.options.riskLevel;
+                marker.setIcon(createCustomIcon(riskLevel, true));
+
                 setTimeout(() => {
-                    this.parcelMarkers[parcelId].openPopup();
+                    marker.openPopup();
                 }, 1600);
             }
 
@@ -77,20 +114,23 @@ const initMap = (parcels) => {
 
         parcels.forEach(parcel => {
             if (parcel.latitude && parcel.longitude) {
-                const color = parcel.risk_level === 'Low' ? 'green' : parcel.risk_level === 'Medium' ? 'orange' : 'red';
-                const marker = L.divIcon({
-                    className: 'custom-marker',
-                    html: `<div style="background-color: ${color}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;"></div>`,
-                    iconSize: [20, 20],
-                    iconAnchor: [10, 10]
-                });
-                const mapMarker = L.marker([parcel.latitude, parcel.longitude], {icon: marker}).addTo(map)
+                const riskLevel = parcel.risk_level.toLowerCase();
+                const marker = createCustomIcon(riskLevel, false);
+                const mapMarker = L.marker([parcel.latitude, parcel.longitude], {icon: marker, riskLevel: riskLevel}).addTo(map)
                     .bindPopup(`
-                        <div style="padding: 5px;">
-                            <strong>${parcel.name}</strong><br><br>
-                            Health Score: ${parcel.health_score}<br><br>
-                            <span class="badge bg-${color === 'green' ? 'success' : color === 'orange' ? 'warning' : 'danger'}">${parcel.risk_label}</span><br><br>
-                            <a href="/parcel/${parcel.id}" class="btn btn-sm btn-primary">View Details</a>
+                        <div class="text-center">
+                            <h6 class="fw-bold">${parcel.name}</h6>
+                            <div class="progress mb-2" style="height: 20px;">
+                                <div class="progress-bar bg-${riskLevel === 'low' ? 'success' : riskLevel === 'medium' ? 'warning' : 'danger'}" style="width: ${parcel.health_score}%;">
+                                    ${parcel.health_score}%
+                                </div>
+                            </div>
+                            <p class="mb-1"><strong>Risk:</strong> <span class="badge bg-${riskLevel === 'low' ? 'success' : riskLevel === 'medium' ? 'warning' : 'danger'}">${parcel.risk_label}</span></p>
+                            <p class="mb-2"><small>Soil: ${parcel.soil_quality}/10 • Vegetation: ${parcel.vegetation_cover}/10</small></p>
+                            <div class="d-grid gap-1">
+                                <a href="/parcel/${parcel.id}" class="btn btn-sm btn-${riskLevel === 'low' ? 'success' : riskLevel === 'medium' ? 'warning' : 'danger'}">View Details</a>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="window.MapManager.resetMapView()">Reset Map</button>
+                            </div>
                         </div>
                     `);
                 window.MapManager.parcelMarkers[parcel.id] = mapMarker;

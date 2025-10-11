@@ -225,3 +225,11 @@
   - Modified landguardian/app/static/js/app.js: Stored parcelData for keyboard nav.
   - Modified landguardian/app/static/css/style.css: Added selected class styling.
 - **Status:** Completed
+## Task: Enhance Leaflet Markers with Better Visuals and Animations
+
+- **Date:** 2025-10-11
+- **Description:** Improved marker visuals, animations, and popup content for better UX.
+- **Changes Made:**
+  - Modified landguardian/app/static/js/app.js: Added createCustomIcon, updated MapManager, enhanced popup.
+  - Modified landguardian/app/static/css/style.css: Updated pulse animation.
+- **Status:** Completed

@@ -77,3 +77,6 @@ Explanation: Added comprehensive CSS styles including parcel-card hover/active s
 ## Prompt: Context: UX for map. Tasks: Enhance the map interaction system in LandGuardian with professional UI improvements: [details]
 
 Explanation: Enhanced map interactions by adding card-footer with View Details and Focus Map buttons, map header with Reset View button, keyboard navigation support (arrow keys for selection, enter to focus, escape to reset), and CSS for selected state visual feedback.
+## Prompt: Context: Map UI. Task: Enhance the Leaflet markers with better visuals and animations for the focus feature: [details]
+
+Explanation: Enhanced Leaflet markers with createCustomIcon function for risk-based colors and active states, updated pulse animation in CSS, modified MapManager.focusOnParcel for marker animations, enhanced popup content with progress bar and actions, and updated initMap to use new icons and store riskLevel.
