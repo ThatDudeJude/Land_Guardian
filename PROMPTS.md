@@ -23,3 +23,6 @@ Explanation: Created app/__init__.py with the Flask application factory pattern,
 ## Prompt: Context: Entry point for running app during development. Task: Create run.py as the development server entry point: 1. Import create_app from app package 2. Import DevelopmentConfig from config 3. Create app instance using create_app(DevelopmentConfig) 4. Run app with debug mode on port 5000 Include proper __name__ == '__main__' guard and development server configuration.
 
 Explanation: Created run.py with imports for create_app and DevelopmentConfig, app instance creation, and app.run with debug=True on port 5000, including the __name__ guard.
+## Prompt: Context: Database models. Task: Create app/models.py following industry standards: 1. Import db from app package (from app import db) 2. Create LandParcel model with these exact fields: [list] 3. Include __repr__ method for debugging 4. Add class methods for business logic: - calculate_health_score(cls, soil, vegetation) - get_risk_category(cls, score) Follow SQLAlchemy best practices with proper type definitions and constraints.
+
+Explanation: Created app/models.py with LandParcel model including all specified fields, __repr__ method, and class methods for calculating health score and determining risk category.

@@ -79,3 +79,10 @@
 - **Changes Made:**
   - Modified landguardian/run.py: Added imports, app creation, and run command with debug and port configuration.
 - **Status:** Completed
+## Task: Create LandParcel Database Model
+
+- **Date:** 2025-10-11
+- **Description:** Implemented app/models.py with the LandParcel model for LandGuardian.
+- **Changes Made:**
+  - Modified landguardian/app/models.py: Added LandParcel class with fields, __repr__, and business logic methods.
+- **Status:** Completed
