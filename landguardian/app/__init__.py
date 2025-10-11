@@ -6,6 +6,7 @@ from config import Config
 db = SQLAlchemy()
 from app import models
 models.db = db
+models._define_models()
 
 def create_app(config_class=Config):
     """

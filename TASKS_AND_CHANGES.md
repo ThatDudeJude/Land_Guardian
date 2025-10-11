@@ -162,3 +162,11 @@
   - Modified landguardian/app/models.py: Changed db import to local definition.
   - Modified landguardian/app/__init__.py: Added models.db assignment and moved LandParcel import inside init_db.
 - **Status:** Completed
+## Task: Fix SQLAlchemy Instance Registration Error
+
+- **Date:** 2025-10-11
+- **Description:** Resolved RuntimeError due to multiple SQLAlchemy instances not registered with the app.
+- **Changes Made:**
+  - Modified landguardian/app/models.py: Moved LandParcel definition to _define_models function.
+  - Modified landguardian/app/__init__.py: Called models._define_models() after assigning db.
+- **Status:** Completed

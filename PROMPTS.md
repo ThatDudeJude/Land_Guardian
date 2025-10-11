@@ -56,3 +56,6 @@ Explanation: Created app.js with initMap, initChart, initFormPreview functions, 
 ## Prompt: Now, I want to run the app but I am getting the error ImportError: cannot import name 'db' from partially initialized module 'app' (most likely due to a circular import). Can you explain where this error is coming from and how to correct it?
 
 Explanation: Explained the circular import cause and fixed it by defining db locally in models.py, assigning it in __init__.py, and moving LandParcel import inside init_db function.
+## Prompt: I am getting the following error when running the app using python landguardian/run.py: RuntimeError: The current Flask app is not registered with this 'SQLAlchemy' instance. Did you forget to call 'init_app', or did you create multiple 'SQLAlchemy' instances?. What could be the cause?
+
+Explanation: Explained the cause as having two SQLAlchemy instances, with the model using the unregistered one, and fixed it by defining the model in a function called after assigning the shared db instance.
