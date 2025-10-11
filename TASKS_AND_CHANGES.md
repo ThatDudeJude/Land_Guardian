@@ -154,3 +154,11 @@
   - Modified landguardian/app/templates/parcel_detail.html: Updated script to call initChart.
   - Modified landguardian/app/templates/add_parcel.html: Added preview div and script to call initFormPreview.
 - **Status:** Completed
+## Task: Fix Circular Import Error
+
+- **Date:** 2025-10-11
+- **Description:** Resolved ImportError due to circular import between app/__init__.py and app/models.py.
+- **Changes Made:**
+  - Modified landguardian/app/models.py: Changed db import to local definition.
+  - Modified landguardian/app/__init__.py: Added models.db assignment and moved LandParcel import inside init_db.
+- **Status:** Completed

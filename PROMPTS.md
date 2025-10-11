@@ -53,3 +53,6 @@ Explanation: Created style.css with specified styles for body background, card s
 ## Prompt: Context: Adding dynamic functionality using js. Task: Create app.js with these features: 1. Map initialization function with Leaflet map, markers, popups 2. Chart initialization for trend data with Chart.js 3. Form enhancement with real-time health score preview Include proper event listeners and error handling.
 
 Explanation: Created app.js with initMap, initChart, initFormPreview functions, updated templates to call them, and added health preview div to add_parcel.html.
+## Prompt: Now, I want to run the app but I am getting the error ImportError: cannot import name 'db' from partially initialized module 'app' (most likely due to a circular import). Can you explain where this error is coming from and how to correct it?
+
+Explanation: Explained the circular import cause and fixed it by defining db locally in models.py, assigning it in __init__.py, and moving LandParcel import inside init_db function.

@@ -2,9 +2,10 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 from config import Config
-from app.models import LandParcel
 
 db = SQLAlchemy()
+from app import models
+models.db = db
 
 def create_app(config_class=Config):
     """
@@ -30,6 +31,7 @@ def create_app(config_class=Config):
         """
         with app.app_context():
             db.create_all()
+            from app.models import LandParcel
             if LandParcel.query.count() == 0:
                 samples = [
                     {
