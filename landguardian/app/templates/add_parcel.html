@@ -82,6 +82,7 @@
               <div class="form-text">1 = Bare, 10 = Dense</div>
             </div>
           </div>
+          <div id="health-preview" class="mt-2 text-muted"></div>
           <div class="d-flex justify-content-end">
             <a
               href="{{ url_for('main.dashboard') }}"
@@ -95,4 +96,10 @@
     </div>
   </div>
 </div>
+{% endblock %} {% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    initFormPreview();
+  });
+</script>
 {% endblock %}

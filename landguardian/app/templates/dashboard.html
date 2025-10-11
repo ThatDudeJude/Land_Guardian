@@ -92,30 +92,7 @@
 {% endblock %} {% block scripts %}
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-      const map = L.map('map').setView([37.7749, -122.4194], 10);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
-
-      const parcels = {{ parcels|tojson }};
-      parcels.forEach(parcel => {
-          if (parcel.latitude && parcel.longitude) {
-              const color = parcel.risk_level === 'Low' ? 'green' : parcel.risk_level === 'Medium' ? 'orange' : 'red';
-              const marker = L.divIcon({
-                  className: 'custom-marker',
-                  html: `<div style="background-color: ${color}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;"></div>`,
-                  iconSize: [20, 20],
-                  iconAnchor: [10, 10]
-              });
-              L.marker([parcel.latitude, parcel.longitude], {icon: marker}).addTo(map)
-                  .bindPopup(`
-                      <strong>${parcel.name}</strong><br>
-                      Health Score: ${parcel.health_score}<br>
-                      <span class="badge bg-${color === 'green' ? 'success' : color === 'orange' ? 'warning' : 'danger'}">${parcel.risk_label}</span><br>
-                      <a href="${window.location.origin}{{ url_for('main.parcel_detail', parcel_id=parcel.id) }}" class="btn btn-sm btn-primary">View Details</a>
-                  `);
-          }
-      });
+      initMap({{ parcels|tojson }});
   });
 </script>
 {% endblock %}

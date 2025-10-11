@@ -144,3 +144,13 @@
 - **Changes Made:**
   - Created landguardian/app/static/css/style.css: Added styles for background, cards, navbar, progress, breadcrumb, list, map, popup, and markers.
 - **Status:** Completed
+## Task: Create Dynamic JavaScript Functionality
+
+- **Date:** 2025-10-11
+- **Description:** Implemented app.js with map, chart, and form functions.
+- **Changes Made:**
+  - Created landguardian/app/static/js/app.js: Added initMap, initChart, initFormPreview functions.
+  - Modified landguardian/app/templates/dashboard.html: Updated script to call initMap.
+  - Modified landguardian/app/templates/parcel_detail.html: Updated script to call initChart.
+  - Modified landguardian/app/templates/add_parcel.html: Added preview div and script to call initFormPreview.
+- **Status:** Completed
