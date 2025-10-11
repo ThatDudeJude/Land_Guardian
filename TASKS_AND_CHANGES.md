@@ -109,3 +109,10 @@
   - Modified landguardian/app/models.py: Updated calculate_health_score to use weighted formula.
   - Modified landguardian/app/routes.py: Changed add_parcel to use the model's method.
 - **Status:** Completed
+## Task: Create Base HTML Template
+
+- **Date:** 2025-10-11
+- **Description:** Implemented base.html template with HTML5 structure and Jinja2 blocks.
+- **Changes Made:**
+  - Created landguardian/app/templates/base.html: Added HTML5 boilerplate, CDNs, navbar, flash handling, and blocks.
+- **Status:** Completed
