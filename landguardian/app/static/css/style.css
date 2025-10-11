@@ -40,13 +40,69 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.parcel-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
 .parcel-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  transition: all 0.2s ease;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .parcel-card.active {
   border-color: #007bff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.focus-map-btn {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.focus-map-btn:hover {
+  transform: scale(1.05);
+}
+
+#resetMapView {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.75rem;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.parcel-card.loading {
+  animation: pulse 1s infinite;
+  opacity: 0.7;
+}
+
+.focus-map-btn:focus,
+#resetMapView:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .parcel-card {
+    margin-bottom: 1rem;
+  }
+
+  .focus-map-btn {
+    display: block;
+    width: 100%;
+    margin-top: 0.5rem;
+    margin-left: 0;
+  }
 }
