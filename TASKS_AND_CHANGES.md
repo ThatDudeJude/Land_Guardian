@@ -348,3 +348,10 @@
 - **Changes Made:**
   - Modified landguardian/config.py: Added MAIL_SUPPRESS_SEND = True to DevelopmentConfig.
 - **Status:** Completed
+## Task: Generate Mock Data for Testing
+
+- **Date:** 2025-10-12
+- **Description:** Created comprehensive mock data for testing LandGuardian application.
+- **Changes Made:**
+  - Modified landguardian/app/__init__.py: Updated init_db to create users and parcels with specified data, geographic clusters, and time distribution.
+- **Status:** Completed
