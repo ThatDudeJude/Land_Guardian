@@ -1,52 +1,196 @@
-{% extends "base.html" %}
-
-{% block title %}Profile - LandGuardian{% endblock %}
-
+{% extends "base.html" %} {% block title %}Profile - LandGuardian{% endblock %}
 {% block content %}
-<div class="row">
-  <div class="col-md-8">
-    <div class="card">
-      <div class="card-header">
-        <h2 class="card-title mb-0">Profile Information</h2>
-      </div>
-      <div class="card-body">
-        <form method="post">
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" value="{{ current_user.email }}" readonly>
+<div class="container py-5">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title mb-0">My Profile</h2>
+        </div>
+        <div class="card-body">
+          <!-- Profile Completion -->
+          <div class="mb-4">
+            <h5>Profile Completion</h5>
+            <div class="progress mb-2">
+              <div
+                class="progress-bar"
+                role="progressbar"
+                style="width: {{ completion }}%"
+                aria-valuenow="{{ completion }}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                {{ completion }}%
+              </div>
+            </div>
+            {% if completion == 100 %}
+            <span class="badge bg-success">Profile Complete!</span>
+            {% endif %} {% if completion >= 25 and
+            LandParcel.query.filter_by(user_id=current_user.id).count() > 0 %}
+            <span class="badge bg-info">First Parcel Added</span>
+            {% endif %}
           </div>
-          <div class="mb-3">
-            <label for="name" class="form-label">Full Name</label>
-            <input type="text" class="form-control" id="name" name="name" value="{{ current_user.name }}" required>
+
+          <!-- User Information -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h5>User Information</h5>
+              <p><strong>Name:</strong> {{ current_user.name }}</p>
+              <p><strong>Email:</strong> {{ current_user.email }}</p>
+              <p>
+                <strong>Organization:</strong> {{ current_user.organization or
+                'Not set' }}
+              </p>
+              <p>
+                <strong>Joined:</strong> {{ current_user.created_at.strftime('%B
+                %Y') }}
+              </p>
+            </div>
+            <div class="col-md-6">
+              <h5>Activity Statistics</h5>
+              <p>
+                <strong>Total Parcels:</strong> {{
+                LandParcel.query.filter_by(user_id=current_user.id).count() }}
+              </p>
+              <p>
+                <strong>Total Logins:</strong> {{ current_user.total_logins }}
+              </p>
+              <p>
+                <strong>Last Login:</strong> {{
+                current_user.last_login.strftime('%Y-%m-%d %H:%M') if
+                current_user.last_login else 'Never' }}
+              </p>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="organization" class="form-label">Organization</label>
-            <input type="text" class="form-control" id="organization" name="organization" value="{{ current_user.organization or '' }}">
+
+          <!-- Recent Activity -->
+          {% if recent_activity %}
+          <div class="mb-4">
+            <h5>Recent Activity</h5>
+            <ul class="list-group list-group-flush">
+              {% for activity in recent_activity %}
+              <li class="list-group-item">{{ activity }}</li>
+              {% endfor %}
+            </ul>
           </div>
-          <div class="mb-3">
-            <label for="role" class="form-label">Role</label>
-            <select class="form-select" id="role" name="role" required>
-              <option value="farmer" {% if current_user.role == 'farmer' %}selected{% endif %}>Farmer</option>
-              <option value="researcher" {% if current_user.role == 'researcher' %}selected{% endif %}>Researcher</option>
-              <option value="policymaker" {% if current_user.role == 'policymaker' %}selected{% endif %}>Policymaker</option>
-            </select>
+          {% endif %}
+
+          <!-- Edit Profile Form -->
+          <div class="mb-4">
+            <h5>Edit Profile</h5>
+            <form method="post">
+              <input type="hidden" name="action" value="update_profile" />
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="name" class="form-label">Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    name="name"
+                    value="{{ current_user.name }}"
+                    required
+                  />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="organization" class="form-label"
+                    >Organization</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="organization"
+                    name="organization"
+                    value="{{ current_user.organization or '' }}"
+                  />
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Update Profile
+              </button>
+            </form>
           </div>
-          <button type="submit" class="btn btn-primary">Update Profile</button>
-        </form>
-        <hr>
-        <a href="{{ url_for('main.change_password') }}" class="btn btn-secondary">Change Password</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title mb-0">Account Statistics</h3>
-      </div>
-      <div class="card-body">
-        <p><strong>Parcels:</strong> {{ current_user.parcels|length }}</p>
-        <p><strong>Joined:</strong> {{ current_user.created_at.strftime('%Y-%m-%d') }}</p>
-        <p><strong>Last Login:</strong> {{ current_user.last_login.strftime('%Y-%m-%d %H:%M') if current_user.last_login else 'Never' }}</p>
+
+          <!-- Change Password Form -->
+          <div class="mb-4">
+            <h5>Change Password</h5>
+            <form method="post">
+              <input type="hidden" name="action" value="change_password" />
+              <div class="mb-3">
+                <label for="current_password" class="form-label"
+                  >Current Password</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="current_password"
+                  name="current_password"
+                  required
+                />
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="new_password" class="form-label"
+                    >New Password</label
+                  >
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="new_password"
+                    name="new_password"
+                    required
+                    minlength="8"
+                  />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="confirm_password" class="form-label"
+                    >Confirm New Password</label
+                  >
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="confirm_password"
+                    name="confirm_password"
+                    required
+                  />
+                </div>
+              </div>
+              <button type="submit" class="btn btn-warning">
+                Change Password
+              </button>
+            </form>
+          </div>
+
+          <!-- Delete Account -->
+          <div class="border-top pt-4">
+            <h5 class="text-danger">Danger Zone</h5>
+            <p class="text-muted">
+              Once you delete your account, there is no going back. Please be
+              certain.
+            </p>
+            <form
+              method="post"
+              onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.')"
+            >
+              <input type="hidden" name="action" value="delete_account" />
+              <div class="mb-3">
+                <label for="confirm_delete" class="form-label"
+                  >Type "DELETE" to confirm</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="confirm_delete"
+                  name="confirm_delete"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-danger">
+                Delete Account
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -1,12 +1,20 @@
+import os
+from dotenv import load_dotenv
+
 from flask import Flask, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_mail import Mail
 from datetime import timedelta
 
 from config import Config
 
+# Load environment variables from .env file
+load_dotenv()
+
 db = SQLAlchemy()
 login_manager = LoginManager()
+mail = Mail()
 from app import models
 models.db = db
 models._define_models()
@@ -28,6 +36,7 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     db.init_app(app)
+    mail.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'main.login'
     login_manager.remember_cookie_duration = timedelta(days=30)

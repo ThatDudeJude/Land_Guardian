@@ -322,3 +322,22 @@
   - Modified landguardian/app/templates/login.html: Added forgot password link.
   - Created landguardian/app/templates/forgot_password.html and reset_password.html: Password recovery forms.
 - **Status:** Completed
+## Task: Implement User Profile and Basic Activity Tracking
+
+- **Date:** 2025-10-12
+- **Description:** Added minimal user profile page and basic activity tracking.
+- **Changes Made:**
+  - Modified landguardian/app/models.py: Added total_logins field to User model.
+  - Modified landguardian/app/routes.py: Updated login tracking, added /profile route with edit functionality.
+  - Created landguardian/app/templates/profile.html: Profile page with organized sections.
+- **Status:** Completed
+## Task: Configure Email Service
+
+- **Date:** 2025-10-12
+- **Description:** Set up email service configurations for password recovery and notifications.
+- **Changes Made:**
+  - Modified landguardian/requirements.txt: Added Flask-Mail and python-dotenv.
+  - Created landguardian/.env: Environment variables for mail configuration.
+  - Modified landguardian/config.py: Added mail settings using environment variables.
+  - Modified landguardian/app/__init__.py: Added dotenv loading and mail initialization.
+- **Status:** Completed

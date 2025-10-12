@@ -219,6 +219,7 @@ def login():
         if user and user.check_password(password):
             login_user(user, remember=remember)
             user.last_login = datetime.utcnow()
+            user.total_logins += 1
             db.session.commit()
             session.pop('login_attempts', None)
             return redirect(url_for('main.dashboard'))
@@ -286,6 +287,70 @@ def settings():
         return redirect(url_for('main.settings'))
 
     return render_template('settings.html')
+
+@main_bp.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    """
+    User profile page with edit functionality.
+    """
+    if request.method == 'POST':
+        action = request.form.get('action')
+
+        if action == 'update_profile':
+            current_user.name = request.form['name']
+            current_user.organization = request.form.get('organization')
+            db.session.commit()
+            flash('Profile updated successfully', 'success')
+
+        elif action == 'change_password':
+            current_password = request.form['current_password']
+            new_password = request.form['new_password']
+            confirm_password = request.form['confirm_password']
+
+            if not current_user.check_password(current_password):
+                flash('Current password is incorrect', 'error')
+            elif len(new_password) < 8:
+                flash('New password must be at least 8 characters long', 'error')
+            elif not re.match(r'^(?=.*[A-Za-z])(?=.*\d)', new_password):
+                flash('New password must contain at least one letter and one number', 'error')
+            elif new_password != confirm_password:
+                flash('New passwords do not match', 'error')
+            else:
+                current_user.set_password(new_password)
+                db.session.commit()
+                flash('Password changed successfully', 'success')
+
+        elif action == 'delete_account':
+            if request.form.get('confirm_delete') == 'DELETE':
+                # Delete all user's parcels first
+                LandParcel.query.filter_by(user_id=current_user.id).delete()
+                db.session.delete(current_user)
+                db.session.commit()
+                logout_user()
+                flash('Account deleted successfully', 'info')
+                return redirect(url_for('main.login'))
+            else:
+                flash('Please type "DELETE" to confirm account deletion', 'error')
+
+        return redirect(url_for('main.profile'))
+
+    # Calculate profile completion
+    completion = 0
+    if current_user.name: completion += 25
+    if current_user.organization: completion += 25
+    if current_user.total_logins > 0: completion += 25
+    if LandParcel.query.filter_by(user_id=current_user.id).count() > 0: completion += 25
+
+    # Recent activity (simplified)
+    recent_activity = []
+    parcels = LandParcel.query.filter_by(user_id=current_user.id).order_by(LandParcel.last_updated.desc()).limit(5).all()
+    for parcel in parcels:
+        recent_activity.append(f"Updated parcel '{parcel.name}'")
+
+    return render_template('profile.html',
+                         completion=completion,
+                         recent_activity=recent_activity)
 
 @main_bp.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
