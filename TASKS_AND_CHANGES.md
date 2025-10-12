@@ -377,3 +377,61 @@
 - **Changes Made:**
   - Modified landguardian/app/templates/welcome.html: Changed the tour button from <a> with href to <button type="button">.
 - **Status:** Completed
+## Task: Implement Dashboard-Triggered Tour with Element Highlighting
+
+- **Date:** 2025-10-12
+- **Description:** Implemented contextual guided tour on dashboard with element highlighting overlays.
+- **Changes Made:**
+  - Modified landguardian/app/static/css/style.css: Added tour overlay, spotlight, and highlight CSS classes.
+  - Modified landguardian/app/routes.py: Added show_tour variable to dashboard template context.
+  - Modified landguardian/app/templates/dashboard.html: Added tour overlays, modals, and TourManager JavaScript class with highlighting functionality.
+- **Status:** Completed
+## Task: Clean Up Welcome Page Tour Code
+
+- **Date:** 2025-10-12
+- **Description:** Removed obsolete tour code from welcome.html and updated navigation for smooth user experience.
+- **Changes Made:**
+  - Modified landguardian/app/templates/welcome.html: Removed old tour modals and JavaScript, changed tour button to redirect to dashboard with tour parameter.
+- **Status:** Completed
+## Task: Fix Tour Auto-Start Logic
+
+- **Date:** 2025-10-12
+- **Description:** Fixed tour auto-start condition to only trigger for users who came from welcome tour button.
+- **Changes Made:**
+  - Modified landguardian/app/templates/dashboard.html: Changed tour auto-start condition from window.showTour to window.cameFromTour.
+- **Status:** Completed
+## Task: Implement Backend Dummy Data for Tour Users
+
+- **Date:** 2025-10-12
+- **Description:** Added backend dummy data generation for tour users to show full dashboard interface.
+- **Changes Made:**
+  - Modified landguardian/app/routes.py: Added get_tour_dummy_data() function and updated dashboard route to use dummy data for tour visitors.
+- **Status:** Completed
+## Task: Fix ValueError in Tour Dummy Data
+
+- **Date:** 2025-10-12
+- **Description:** Fixed ValueError caused by string IDs in dummy data when generating URLs.
+- **Changes Made:**
+  - Modified landguardian/app/templates/dashboard.html: Added conditional rendering to hide "View Details" links for tour users and show "Sample Parcel" badges instead.
+- **Status:** Completed
+## Task: Fix Tour Overlay Null Error
+
+- **Date:** 2025-10-12
+- **Description:** Fixed TypeError caused by accessing overlay.style when overlay element was null.
+- **Changes Made:**
+  - Modified landguardian/app/templates/dashboard.html: Moved TourManager initialization to after DOMContentLoaded and added null checks in hideOverlay method.
+- **Status:** Completed
+## Task: Improve Tour Flow and Add Parcel Cards
+
+- **Date:** 2025-10-12
+- **Description:** Enhanced tour functionality with better flow, added parcel cards highlighting, and fixed modal navigation issues.
+- **Changes Made:**
+  - Modified landguardian/app/templates/dashboard.html: Updated TourManager logic for 4-step tour, added parcel cards step, fixed modal navigation, and improved highlighting for tour users.
+- **Status:** Completed
+## Task: Fix Tour Selector and Add Scroll-to-View
+
+- **Date:** 2025-10-12
+- **Description:** Fixed tour selector issue and added scroll-into-view functionality for better user experience.
+- **Changes Made:**
+  - Modified landguardian/app/templates/dashboard.html: Changed statistics card selector to '.card.bg-primary' and added scrollIntoView with smooth behavior and 600ms delay for spotlight positioning.
+- **Status:** Completed

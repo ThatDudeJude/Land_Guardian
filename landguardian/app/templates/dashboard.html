@@ -230,18 +230,24 @@
           class="badge bg-{% if parcel.risk_level == 'Low' %}success{% elif parcel.risk_level == 'Medium' %}warning{% else %}danger{% endif %}"
           >{{ parcel.risk_label }}</span
         >
+        {% if not came_from_tour %}
         <a
           href="{{ url_for('main.parcel_detail', parcel_id=parcel.id) }}"
           class="btn btn-outline-primary btn-sm float-end"
           >View Details</a
         >
+        {% else %}
+        <span class="badge bg-secondary float-end">Sample Parcel</span>
+        {% endif %}
       </div>
       <div class="card-footer">
+        {% if not came_from_tour %}
         <a
           href="{{ url_for('main.parcel_detail', parcel_id=parcel.id) }}"
           class="btn btn-outline-{{ parcel.risk_color }} btn-sm"
           >View Details</a
         >
+        {% endif %}
         <button
           class="btn btn-outline-primary btn-sm focus-map-btn"
           data-lat="{{ parcel.latitude }}"
@@ -261,91 +267,419 @@
 </script>
 {% endif %} {% block scripts %}
 <script>
-    window.parcelsData = {{ parcels_data|tojson }};
-  document.addEventListener('DOMContentLoaded', function() {
+  window.parcelsData = {{ parcels_data|tojson }};
+  window.showTour = {{ show_tour|tojson }};
+  window.cameFromTour = {{ came_from_tour|tojson }};
+</script>
+<script>
+  // Tour Manager Class
+  class TourManager {
+    constructor() {
+      this.currentStep = 0;
+      this.overlay = document.getElementById('tour-overlay');
+      this.spotlight = document.getElementById('tour-spotlight');
+      this.isActive = false;
+    }
+
+    startTour() {
+      if (this.isActive) return;
+      this.isActive = true;
+      this.currentStep = 1;
+      this.showStep(1);
+    }
+
+    showStep(step) {
+      this.currentStep = step;
+      this.hideOverlay();
+
+      const hasParcels = window.parcelsData && window.parcelsData.length > 0;
+      const isTourUser = window.cameFromTour;
+
+      switch (step) {
+        case 1:
+          this.highlightElement('.display-4', 'Welcome to Your Dashboard');
+          break;
+        case 2:
+          if (isTourUser || hasParcels) {
+            this.highlightElement('#map', 'Interactive Map');
+          } else {
+            this.highlightElement(
+              '.empty-state .btn-success',
+              'Add Your First Parcel'
+            );
+          }
+          break;
+        case 3:
+          if (isTourUser || hasParcels) {
+            this.highlightElement('.card.bg-primary', 'Dashboard Statistics');
+          } else {
+            this.highlightElement(
+              '.empty-state .card',
+              'Quick Help Information'
+            );
+          }
+          break;
+        case 4:
+          if (isTourUser || hasParcels) {
+            this.highlightElement('.parcel-card', 'Land Parcel Cards');
+          } else {
+            this.highlightElement(
+              '.btn-primary[href*="add_parcel"]',
+              'Add New Parcel'
+            );
+          }
+          break;
+      }
+    }
+
+    highlightElement(selector, title) {
+      const element = document.querySelector(selector);
+      if (!element) return;
+
+      // Scroll element into view with smooth animation
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'center',
+      });
+
+      // Delay spotlight positioning to allow scroll to complete
+      setTimeout(() => {
+        const rect = element.getBoundingClientRect();
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft =
+          window.pageXOffset || document.documentElement.scrollLeft;
+
+        // Position spotlight
+        this.spotlight.style.top = rect.top + scrollTop - 5 + 'px';
+        this.spotlight.style.left = rect.left + scrollLeft - 5 + 'px';
+        this.spotlight.style.width = rect.width + 10 + 'px';
+        this.spotlight.style.height = rect.height + 10 + 'px';
+
+        // Show overlay and spotlight
+        this.overlay.style.display = 'block';
+        this.spotlight.style.display = 'block';
+
+        // Add highlight class to element
+        element.classList.add('tour-highlight');
+
+        // Show modal
+        const modal = new bootstrap.Modal(
+          document.getElementById(`tourModal${this.currentStep}`)
+        );
+        modal.show();
+      }, 600); // Allow time for smooth scroll to complete
+    }
+
+    hideOverlay() {
+      if (this.overlay) {
+        this.overlay.style.display = 'none';
+      }
+      if (this.spotlight) {
+        this.spotlight.style.display = 'none';
+      }
+      document.querySelectorAll('.tour-highlight').forEach((el) => {
+        el.classList.remove('tour-highlight');
+      });
+    }
+
+    nextStep() {
+      if (this.currentStep < this.getMaxSteps()) {
+        this.showStep(this.currentStep + 1);
+      } else {
+        this.endTour();
+      }
+    }
+
+    prevStep() {
+      if (this.currentStep > 1) {
+        this.showStep(this.currentStep - 1);
+      }
+    }
+
+    getMaxSteps() {
+      return window.cameFromTour ||
+        (window.parcelsData && window.parcelsData.length > 0)
+        ? 4
+        : 3;
+    }
+
+    endTour() {
+      this.hideOverlay();
+      this.isActive = false;
+      localStorage.setItem('tour_completed', 'true');
+
+      // Redirect to welcome page if user came from tour button
+      if (window.cameFromTour) {
+        window.location.href = '{{ url_for("main.welcome") }}';
+      }
+    }
+
+    skipTour() {
+      this.endTour();
+    }
+  }
+
+  // Initialize tour manager after DOMContentLoaded
+  let tourManager;
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Initialize tour manager now that DOM elements exist
+    tourManager = new TourManager();
+
+    // Auto-start tour only for users who came from welcome tour button
+    if (window.cameFromTour && !localStorage.getItem('tour_completed')) {
+      setTimeout(() => tourManager.startTour(), 1000);
+    }
+
+    // Tour navigation event listeners
+    document.getElementById('tour-next-1')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal1')).hide();
+      tourManager.nextStep();
+    });
+
+    document.getElementById('tour-next-2')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal2')).hide();
+      tourManager.nextStep();
+    });
+
+    document.getElementById('tour-back-2')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal2')).hide();
+      tourManager.prevStep();
+    });
+
+    document.getElementById('tour-back-3')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal3')).hide();
+      tourManager.prevStep();
+    });
+
+    document.getElementById('tour-next-3')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal3')).hide();
+      tourManager.nextStep();
+    });
+
+    document.getElementById('tour-back-3')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal3')).hide();
+      tourManager.prevStep();
+    });
+
+    document.getElementById('tour-back-4')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal4')).hide();
+      tourManager.prevStep();
+    });
+
+    document.getElementById('tour-finish')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal4')).hide();
+      tourManager.endTour();
+    });
+
+    document.getElementById('skip-tour')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal1')).hide();
+      tourManager.skipTour();
+    });
 
     // Load sample data button
-    document.querySelectorAll('.load-sample-data').forEach(btn => {
-        btn.addEventListener('click', function() {
-            fetch('/load-sample-data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Error loading sample data');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error loading sample data');
-            });
-        });
+    document.querySelectorAll('.load-sample-data').forEach((btn) => {
+      btn.addEventListener('click', function () {
+        fetch('/load-sample-data', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              location.reload();
+            } else {
+              alert('Error loading sample data');
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            alert('Error loading sample data');
+          });
+      });
     });
 
     // Card click events
-        document.querySelectorAll('.parcel-card').forEach(card => {
-            card.addEventListener('click', function() {
-                const lat = parseFloat(this.dataset.lat);
-                const lng = parseFloat(this.dataset.lng);
-                const id = this.dataset.id;
-                if (lat && lng) {
-                    window.MapManager.focusOnParcel(lat, lng, id);
-                }
-            });
-        });
-
-        // Focus button events
-        document.querySelectorAll('.focus-map-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation(); // Prevent card click event
-                const lat = parseFloat(this.dataset.lat);
-                const lng = parseFloat(this.dataset.lng);
-                const id = this.dataset.id;
-                if (lat && lng) {
-                    window.MapManager.focusOnParcel(lat, lng, id);
-                }
-            });
-        });
-
-        // Reset map view button
-        document.getElementById('resetMapView')?.addEventListener('click', function() {
-            window.MapManager.resetMapView();
-        });
-
-        // Keyboard navigation
-        let selectedIndex = -1;
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                selectedIndex = (selectedIndex + 1) % window.parcelData.length;
-                updateSelection();
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                selectedIndex = (selectedIndex - 1 + window.parcelData.length) % window.parcelData.length;
-                updateSelection();
-            } else if (e.key === 'Enter' && selectedIndex >= 0) {
-                e.preventDefault();
-                const parcel = window.parcelData[selectedIndex];
-                window.MapManager.focusOnParcel(parcel.latitude, parcel.longitude, parcel.id);
-            } else if (e.key === 'Escape') {
-                e.preventDefault();
-                window.MapManager.resetMapView();
-                selectedIndex = -1;
-                updateSelection();
-            }
-        });
-
-        function updateSelection() {
-            document.querySelectorAll('.parcel-card').forEach((card, index) => {
-                card.classList.toggle('selected', index === selectedIndex);
-            });
+    document.querySelectorAll('.parcel-card').forEach((card) => {
+      card.addEventListener('click', function () {
+        const lat = parseFloat(this.dataset.lat);
+        const lng = parseFloat(this.dataset.lng);
+        const id = this.dataset.id;
+        if (lat && lng) {
+          window.MapManager.focusOnParcel(lat, lng, id);
         }
+      });
     });
+
+    // Focus button events
+    document.querySelectorAll('.focus-map-btn').forEach((btn) => {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation(); // Prevent card click event
+        const lat = parseFloat(this.dataset.lat);
+        const lng = parseFloat(this.dataset.lng);
+        const id = this.dataset.id;
+        if (lat && lng) {
+          window.MapManager.focusOnParcel(lat, lng, id);
+        }
+      });
+    });
+
+    // Reset map view button
+    document
+      .getElementById('resetMapView')
+      ?.addEventListener('click', function () {
+        window.MapManager.resetMapView();
+      });
+
+    // Keyboard navigation
+    let selectedIndex = -1;
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedIndex = (selectedIndex + 1) % window.parcelData.length;
+        updateSelection();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedIndex =
+          (selectedIndex - 1 + window.parcelData.length) %
+          window.parcelData.length;
+        updateSelection();
+      } else if (e.key === 'Enter' && selectedIndex >= 0) {
+        e.preventDefault();
+        const parcel = window.parcelData[selectedIndex];
+        window.MapManager.focusOnParcel(
+          parcel.latitude,
+          parcel.longitude,
+          parcel.id
+        );
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        window.MapManager.resetMapView();
+        selectedIndex = -1;
+        updateSelection();
+      }
+    });
+
+    function updateSelection() {
+      document.querySelectorAll('.parcel-card').forEach((card, index) => {
+        card.classList.toggle('selected', index === selectedIndex);
+      });
+    }
+  });
 </script>
+<!-- Tour Overlays -->
+<div id="tour-overlay" class="tour-overlay"></div>
+<div id="tour-spotlight" class="tour-spotlight"></div>
+
+<!-- Tour Modals -->
+<div class="modal fade" id="tourModal1" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Welcome to Your Dashboard</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          {% if parcels %}This is your dashboard where you can see all your land
+          parcels, statistics, and health monitoring data.{% else %}This is your
+          land dashboard. Once you add parcels, you'll see them displayed here
+          with health monitoring data.{% endif %}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="skip-tour">Skip Tour</button>
+        <button class="btn btn-primary" id="tour-next-1">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="tourModal2" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Interactive Map</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          {% if parcels %}This interactive map shows your parcels with
+          color-coded risk levels. Green markers indicate low risk, yellow
+          medium, and red high risk areas.{% else %}This is where your
+          interactive map will appear once you add parcels. It will show your
+          land parcels with color-coded risk levels.{% endif %}
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="tour-back-2">Back</button>
+        <button class="btn btn-primary" id="tour-next-2">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="tourModal3" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Dashboard Statistics</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          These cards show key statistics about your land parcels: total count,
+          high-risk areas, and average health score. The health score is
+          calculated from soil quality and vegetation cover data.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="tour-back-3">Back</button>
+        <button class="btn btn-primary" id="tour-next-3">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="tourModal4" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Land Parcel Cards</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Each card represents a land parcel with its health score, risk level,
+          and location. Click on a card to view detailed information or use the
+          "Focus Map" button to center the map on that parcel.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="tour-back-4">Back</button>
+        <button class="btn btn-success" id="tour-finish">Get Started!</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

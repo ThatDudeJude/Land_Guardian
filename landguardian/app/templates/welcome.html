@@ -55,13 +55,12 @@
       </div>
 
       <div class="text-center mb-4">
-        <button
-          type="button"
+        <a
+          href="{{ url_for('main.dashboard') }}?tour=true"
           class="btn btn-primary btn-lg me-3"
-          id="start-tour"
         >
           Take a Quick Tour
-        </button>
+        </a>
         <button class="btn btn-outline-secondary btn-lg" id="load-sample">
           Load Sample Data
         </button>
@@ -76,87 +75,10 @@
   </div>
 </div>
 
-<!-- Tour Modals -->
-<div class="modal fade" id="tourModal1" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Welcome to Your Dashboard</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <p>
-          This is your dashboard where you can see all your land parcels,
-          statistics, and health monitoring data.
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" id="skip-tour">Skip Tour</button>
-        <button class="btn btn-primary" id="tour-next-1">Next</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="tourModal2" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Interactive Map</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <p>
-          The map shows your parcels with color-coded risk levels. Green for low
-          risk, yellow for medium, red for high risk.
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" id="tour-back-2">Back</button>
-        <button class="btn btn-primary" id="tour-next-2">Next</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="tourModal3" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Add Your First Parcel</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <p>
-          Click the "Add New Parcel" button to start adding your land parcels.
-          You'll need soil quality and vegetation cover data.
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" id="tour-back-3">Back</button>
-        <button class="btn btn-success" id="tour-finish">Get Started!</button>
-      </div>
-    </div>
-  </div>
-</div>
 {% endblock %} {% block scripts %}
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const startTourBtn = document.getElementById('start-tour');
     const loadSampleBtn = document.getElementById('load-sample');
-    const skipTourBtn = document.getElementById('skip-tour');
 
     // Load sample data
     loadSampleBtn.addEventListener('click', function () {
@@ -175,73 +97,6 @@
             alert('Error loading sample data');
           }
         });
-    });
-
-    // Start tour
-    startTourBtn.addEventListener('click', function () {
-      const modal1 = new bootstrap.Modal(document.getElementById('tourModal1'));
-      modal1.show();
-    });
-
-    // Tour navigation
-    document
-      .getElementById('tour-next-1')
-      .addEventListener('click', function () {
-        bootstrap.Modal.getInstance(
-          document.getElementById('tourModal1')
-        ).hide();
-        const modal2 = new bootstrap.Modal(
-          document.getElementById('tourModal2')
-        );
-        modal2.show();
-      });
-
-    document
-      .getElementById('tour-next-2')
-      .addEventListener('click', function () {
-        bootstrap.Modal.getInstance(
-          document.getElementById('tourModal2')
-        ).hide();
-        const modal3 = new bootstrap.Modal(
-          document.getElementById('tourModal3')
-        );
-        modal3.show();
-      });
-
-    document
-      .getElementById('tour-back-2')
-      .addEventListener('click', function () {
-        bootstrap.Modal.getInstance(
-          document.getElementById('tourModal2')
-        ).hide();
-        const modal1 = new bootstrap.Modal(
-          document.getElementById('tourModal1')
-        );
-        modal1.show();
-      });
-
-    document
-      .getElementById('tour-back-3')
-      .addEventListener('click', function () {
-        bootstrap.Modal.getInstance(
-          document.getElementById('tourModal3')
-        ).hide();
-        const modal2 = new bootstrap.Modal(
-          document.getElementById('tourModal2')
-        );
-        modal2.show();
-      });
-
-    document
-      .getElementById('tour-finish')
-      .addEventListener('click', function () {
-        localStorage.setItem('tour_completed', 'true');
-        window.location.href = '{{ url_for("main.dashboard") }}';
-      });
-
-    skipTourBtn.addEventListener('click', function () {
-      localStorage.setItem('tour_completed', 'true');
-      window.location.href = '{{ url_for("main.dashboard") }}';
     });
   });
 </script>

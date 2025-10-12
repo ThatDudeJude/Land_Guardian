@@ -10,39 +10,115 @@ from app.models import LandParcel, User
 
 main_bp = Blueprint('main', __name__)
 
-@main_bp.route('/')
-@login_required
-def dashboard():
+def get_tour_dummy_data():
     """
-    Dashboard route displaying land parcel statistics and list.
+    Generate dummy data for tour demonstration.
+    Returns dummy parcels and statistics for users taking the tour.
     """
-    parcels = LandParcel.query.filter_by(user_id=current_user.id).all()
-    total_parcels = len(parcels)
-    high_risk_count = sum(1 for p in parcels if p.risk_level == 'High')
-    average_health = sum(p.health_score for p in parcels) / total_parcels if total_parcels > 0 else 0
+    dummy_parcels = [
+        {
+            'id': 'demo-1',
+            'name': 'North Farm Field A',
+            'location': 'North Farm',
+            'latitude': 37.7749,
+            'longitude': -122.4194,
+            'soil_quality': 8,
+            'vegetation_cover': 7,
+            'health_score': LandParcel.calculate_health_score(8, 7),
+            'risk_level': 'Low',
+            'risk_label': 'Low Risk',
+            'risk_color': 'green',
+            'last_updated': datetime.utcnow()
+        },
+        {
+            'id': 'demo-2',
+            'name': 'South Valley Plot',
+            'location': 'South Valley',
+            'latitude': 37.7510,
+            'longitude': -122.4180,
+            'soil_quality': 4,
+            'vegetation_cover': 3,
+            'health_score': LandParcel.calculate_health_score(4, 3),
+            'risk_level': 'High',
+            'risk_label': 'High Risk',
+            'risk_color': 'red',
+            'last_updated': datetime.utcnow()
+        },
+        {
+            'id': 'demo-3',
+            'name': 'East Hills Section',
+            'location': 'East Hills',
+            'latitude': 37.7850,
+            'longitude': -122.4100,
+            'soil_quality': 6,
+            'vegetation_cover': 5,
+            'health_score': LandParcel.calculate_health_score(6, 5),
+            'risk_level': 'Medium',
+            'risk_label': 'Medium Risk',
+            'risk_color': 'yellow',
+            'last_updated': datetime.utcnow()
+        }
+    ]
+
+    # Calculate statistics from dummy data
+    total_parcels = len(dummy_parcels)
+    high_risk_count = sum(1 for p in dummy_parcels if p['risk_level'] == 'High')
+    average_health = sum(p['health_score'] for p in dummy_parcels) / total_parcels
+
     stats = {
         'total': total_parcels,
         'high_risk': high_risk_count,
         'average_health': round(average_health, 1)
     }
-    parcels_data = [
-        {
-            'id': p.id,
-            'name': p.name,
-            'location': p.location,
-            'latitude': p.latitude,
-            'longitude': p.longitude,
-            'risk_level': p.risk_level,
-            'health_score': p.health_score,
-            'risk_label': p.risk_label,
-            'soil_quality': p.soil_quality,
-            'vegetation_cover': p.vegetation_cover,
-            'risk_color': p.risk_color
-        } for p in parcels
-    ]
-    is_first_visit = len(parcels) == 0
+
+    return dummy_parcels, stats
+
+@main_bp.route('/')
+@login_required
+def dashboard():
+    """
+    Dashboard route displaying land parcel statistics and list.
+    For tour users, shows dummy data to demonstrate full interface.
+    """
+    parcels = LandParcel.query.filter_by(user_id=current_user.id).all()
+    came_from_tour = request.args.get('tour') == 'true'
+
+    # Use dummy data for tour visitors with no parcels
+    if came_from_tour and len(parcels) == 0:
+        parcels, stats = get_tour_dummy_data()
+        parcels_data = parcels  # Use dummy parcels for map
+        is_first_visit = False  # Show full dashboard for tour
+    else:
+        # Normal logic for regular users
+        total_parcels = len(parcels)
+        high_risk_count = sum(1 for p in parcels if p.risk_level == 'High')
+        average_health = sum(p.health_score for p in parcels) / total_parcels if total_parcels > 0 else 0
+        stats = {
+            'total': total_parcels,
+            'high_risk': high_risk_count,
+            'average_health': round(average_health, 1)
+        }
+        parcels_data = [
+            {
+                'id': p.id,
+                'name': p.name,
+                'location': p.location,
+                'latitude': p.latitude,
+                'longitude': p.longitude,
+                'risk_level': p.risk_level,
+                'health_score': p.health_score,
+                'risk_label': p.risk_label,
+                'soil_quality': p.soil_quality,
+                'vegetation_cover': p.vegetation_cover,
+                'risk_color': p.risk_color
+            } for p in parcels
+        ]
+        is_first_visit = len(parcels) == 0
+
     map_style = current_user.preferences.get('map_style', 'satellite')
-    return render_template('dashboard.html', parcels=parcels, stats=stats, parcels_data=parcels_data, is_first_visit=is_first_visit, map_style=map_style)
+    show_tour = came_from_tour  # Only show tour for tour visitors
+
+    return render_template('dashboard.html', parcels=parcels, stats=stats, parcels_data=parcels_data, is_first_visit=is_first_visit, map_style=map_style, show_tour=show_tour, came_from_tour=came_from_tour)
 
 @main_bp.route('/add', methods=['GET', 'POST'])
 @login_required
