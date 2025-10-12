@@ -87,6 +87,11 @@ def _define_models():
             last_login = db.Column(db.DateTime)
 
             is_active = db.Column(db.Boolean, default=True)
+            preferences = db.Column(db.JSON, default=lambda: {
+                'units': 'metric',
+                'map_style': 'satellite',
+                'notifications': {'email': True, 'browser': True}
+            })
 
             def set_password(self, password):
 

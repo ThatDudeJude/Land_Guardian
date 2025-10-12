@@ -285,7 +285,7 @@
               });
           });
       });
-          initMap({{ parcels_data|tojson }});
+          initMap({{ parcels_data|tojson }}, '{{ map_style }}');
 
           // Card click events
           document.querySelectorAll('.parcel-card').forEach(card => {

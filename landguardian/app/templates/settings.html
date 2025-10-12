@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - LandGuardian{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title mb-0">User Settings</h2>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="units" class="form-label">Measurement Units</label>
+                <select class="form-select" id="units" name="units">
+                  <option value="metric" {% if current_user.preferences.units == 'metric' %}selected{% endif %}>Metric</option>
+                  <option value="imperial" {% if current_user.preferences.units == 'imperial' %}selected{% endif %}>Imperial</option>
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="map_style" class="form-label">Map View Style</label>
+                <select class="form-select" id="map_style" name="map_style">
+                  <option value="satellite" {% if current_user.preferences.map_style == 'satellite' %}selected{% endif %}>Satellite</option>
+                  <option value="terrain" {% if current_user.preferences.map_style == 'terrain' %}selected{% endif %}>Terrain</option>
+                  <option value="street" {% if current_user.preferences.map_style == 'street' %}selected{% endif %}>Street</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Notifications</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="email" name="email" {% if current_user.preferences.notifications.email %}checked{% endif %}>
+                <label class="form-check-label" for="email">
+                  Email notifications
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="browser" name="browser" {% if current_user.preferences.notifications.browser %}checked{% endif %}>
+                <label class="form-check-label" for="browser">
+                  Browser notifications
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Settings</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

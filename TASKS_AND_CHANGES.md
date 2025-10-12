@@ -301,3 +301,14 @@
 - **Changes Made:**
   - Modified landguardian/app/templates/dashboard.html: Added conditional empty state, help icons with collapsible sections, progress indicators, achievement badges, and mobile-responsive design.
 - **Status:** Completed
+## Task: Implement User Preference System
+
+- **Date:** 2025-10-12
+- **Description:** Added minimal user preference system for units, map style, and notifications.
+- **Changes Made:**
+  - Modified landguardian/app/models.py: Added preferences JSON field to User model.
+  - Created landguardian/utils/units.py: Unit conversion functions.
+  - Modified landguardian/app/routes.py: Added /settings route.
+  - Created landguardian/app/templates/settings.html: Settings form.
+  - Modified landguardian/app/routes.py and landguardian/app/templates/dashboard.html: Applied map style preferences.
+- **Status:** Completed

@@ -39,7 +39,8 @@ def dashboard():
         } for p in parcels
     ]
     is_first_visit = len(parcels) == 0
-    return render_template('dashboard.html', parcels=parcels, stats=stats, parcels_data=parcels_data, is_first_visit=is_first_visit)
+    map_style = current_user.preferences.get('map_style', 'satellite')
+    return render_template('dashboard.html', parcels=parcels, stats=stats, parcels_data=parcels_data, is_first_visit=is_first_visit, map_style=map_style)
 
 @main_bp.route('/add', methods=['GET', 'POST'])
 @login_required
@@ -266,3 +267,20 @@ def change_password():
         return redirect(url_for('main.profile'))
 
     return render_template('change_password.html')
+
+@main_bp.route('/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
+    """
+    User settings page for preferences.
+    """
+    if request.method == 'POST':
+        current_user.preferences['units'] = request.form['units']
+        current_user.preferences['map_style'] = request.form['map_style']
+        current_user.preferences['notifications']['email'] = 'email' in request.form
+        current_user.preferences['notifications']['browser'] = 'browser' in request.form
+        db.session.commit()
+        flash('Settings updated successfully', 'success')
+        return redirect(url_for('main.settings'))
+
+    return render_template('settings.html')
