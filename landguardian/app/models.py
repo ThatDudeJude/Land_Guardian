@@ -85,6 +85,7 @@ def _define_models():
             created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
             last_login = db.Column(db.DateTime)
+            total_logins = db.Column(db.Integer, default=0)
 
             is_active = db.Column(db.Boolean, default=True)
             preferences = db.Column(db.JSON, default=lambda: {
@@ -92,6 +93,8 @@ def _define_models():
                 'map_style': 'satellite',
                 'notifications': {'email': True, 'browser': True}
             })
+            reset_token = db.Column(db.String(128))
+            reset_token_expires = db.Column(db.DateTime)
 
             def set_password(self, password):
 
@@ -100,6 +103,32 @@ def _define_models():
             def check_password(self, password):
 
                 return check_password_hash(self.password_hash, password)
+
+            def generate_reset_token(self):
+                """
+                Generate a secure password reset token with 1-hour expiration.
+                """
+                import secrets
+                from datetime import datetime, timedelta
+
+                self.reset_token = secrets.token_urlsafe(32)
+                self.reset_token_expires = datetime.utcnow() + timedelta(hours=1)
+                return self.reset_token
+
+            @staticmethod
+            def verify_reset_token(token):
+                """
+                Verify and return user if token is valid and not expired.
+                Invalidates token after use.
+                """
+                from datetime import datetime
+
+                user = User.query.filter_by(reset_token=token).first()
+                if user and user.reset_token_expires > datetime.utcnow():
+                    user.reset_token = None
+                    user.reset_token_expires = None
+                    return user
+                return None
 
             def get_id(self):
 

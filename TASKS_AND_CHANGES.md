@@ -312,3 +312,13 @@
   - Created landguardian/app/templates/settings.html: Settings form.
   - Modified landguardian/app/routes.py and landguardian/app/templates/dashboard.html: Applied map style preferences.
 - **Status:** Completed
+## Task: Implement Password Recovery Functionality
+
+- **Date:** 2025-10-12
+- **Description:** Added essential password recovery features for LandGuardian MVP.
+- **Changes Made:**
+  - Modified landguardian/app/models.py: Added reset_token fields and methods.
+  - Modified landguardian/app/routes.py: Added forgot_password and reset_password routes with email sending and validation.
+  - Modified landguardian/app/templates/login.html: Added forgot password link.
+  - Created landguardian/app/templates/forgot_password.html and reset_password.html: Password recovery forms.
+- **Status:** Completed

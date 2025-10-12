@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, abort, flash, session
 from flask_login import login_user, logout_user, login_required, current_user
+from flask_mail import Message
 from datetime import datetime
 import re
+import logging
 
-from app import db
+from app import db, mail
 from app.models import LandParcel, User
 
 main_bp = Blueprint('main', __name__)
@@ -284,3 +286,103 @@ def settings():
         return redirect(url_for('main.settings'))
 
     return render_template('settings.html')
+
+@main_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    """
+    Handle password reset requests with rate limiting.
+    """
+    # Rate limiting: 3 attempts per hour per IP
+    attempts_key = f"forgot_password_{request.remote_addr}"
+    attempts = session.get(attempts_key, [])
+    attempts = [t for t in attempts if datetime.utcnow().timestamp() - t < 3600]  # Remove old attempts
+
+    if len(attempts) >= 3:
+        flash('Too many reset attempts. Please try again later.', 'error')
+        return redirect(url_for('main.login'))
+
+    if request.method == 'POST':
+        email = request.form['email']
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+            token = user.generate_reset_token()
+            reset_url = url_for('main.reset_password', token=token, _external=True)
+
+            msg = Message('Password Reset Request - LandGuardian',
+                         sender=app.config['MAIL_DEFAULT_SENDER'],
+                         recipients=[email])
+            msg.body = f'''Hello {user.name},
+
+You have requested to reset your password for your LandGuardian account.
+
+To reset your password, please click the following link:
+{reset_url}
+
+This link will expire in 1 hour for security reasons.
+
+If you did not request this password reset, please ignore this email. Your password will remain unchanged.
+
+For security reasons, please do not share this email with anyone.
+
+Best regards,
+The LandGuardian Team
+'''
+            try:
+                mail.send(msg)
+                flash('Password reset link has been sent to your email.', 'info')
+                logging.info(f'Password reset email sent to {email}')
+            except Exception as e:
+                flash('Error sending email. Please try again later.', 'error')
+                logging.error(f'Failed to send password reset email to {email}: {str(e)}')
+        else:
+            flash('If an account with that email exists, a password reset link has been sent.', 'info')
+
+        # Record attempt
+        attempts.append(datetime.utcnow().timestamp())
+        session[attempts_key] = attempts
+
+        return redirect(url_for('main.login'))
+
+    return render_template('forgot_password.html')
+
+@main_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    """
+    Handle password reset with token validation.
+    """
+    user = User.verify_reset_token(token)
+    if not user:
+        flash('Invalid or expired reset token', 'error')
+        logging.warning(f'Invalid password reset attempt with token: {token[:10]}...')
+        return redirect(url_for('main.login'))
+
+    if request.method == 'POST':
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+
+        # Password strength validation
+        if len(password) < 8:
+            flash('Password must be at least 8 characters long', 'error')
+            return redirect(url_for('main.reset_password', token=token))
+
+        if not re.match(r'^(?=.*[A-Za-z])(?=.*\d)', password):
+            flash('Password must contain at least one letter and one number', 'error')
+            return redirect(url_for('main.reset_password', token=token))
+
+        if password != confirm_password:
+            flash('Passwords do not match', 'error')
+            return redirect(url_for('main.reset_password', token=token))
+
+        user.set_password(password)
+        db.session.commit()
+
+        # Auto login
+        login_user(user)
+
+        flash('Password has been reset successfully. You are now logged in.', 'success')
+        logging.info(f'Password reset successful for user: {user.email}')
+
+        return redirect(url_for('main.dashboard'))
+
+    return render_template('reset_password.html')
