@@ -235,18 +235,6 @@ def logout():
     logout_user()
     return redirect(url_for('main.login'))
 
-@main_bp.route('/profile', methods=['GET', 'POST'])
-@login_required
-def profile():
-    if request.method == 'POST':
-        current_user.name = request.form['name']
-        current_user.organization = request.form.get('organization')
-        current_user.role = request.form['role']
-        db.session.commit()
-        flash('Profile updated', 'success')
-        return redirect(url_for('main.profile'))
-
-    return render_template('profile.html')
 
 @main_bp.route('/change-password', methods=['GET', 'POST'])
 @login_required
