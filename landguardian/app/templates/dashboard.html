@@ -3,6 +3,14 @@
 <div class="row mb-4">
   <div class="col">
     <h1 class="display-4">Land Health Dashboard</h1>
+    {% if not parcels %}
+    <p class="text-muted">Step 1 of 3: Add your first land parcel</p>
+    {% elif parcels|length == 1 %}
+    <p class="text-success">
+      <i class="bi bi-check-circle-fill"></i> Great! You've added your first
+      parcel. Continue building your dashboard.
+    </p>
+    {% endif %}
   </div>
   <div class="col-auto">
     <a href="{{ url_for('main.add_parcel') }}" class="btn btn-primary btn-lg"
@@ -11,16 +19,53 @@
   </div>
 </div>
 
+{% if parcels %}
+<div class="row mb-4">
+  <div class="col">
+    <div class="d-flex flex-wrap gap-2">
+      {% if parcels|length >= 1 %}<span class="badge bg-success"
+        >First Parcel Added</span
+      >{% endif %} {% if stats.high_risk == 0 %}<span class="badge bg-info"
+        >All Parcels Healthy</span
+      >{% endif %} {% if stats.average_health >= 70 %}<span
+        class="badge bg-warning"
+        >High Average Health</span
+      >{% endif %}
+    </div>
+  </div>
+</div>
+{% endif %} {% if parcels %}
 <div class="row mb-4">
   <div class="col-12">
     <div class="card">
       <div
         class="card-header d-flex justify-content-between align-items-center"
       >
-        <h4 class="card-title mb-0">📍 Land Parcel Locations</h4>
+        <h4 class="card-title mb-0">
+          📍 Land Parcel Locations
+          <button
+            class="btn btn-link btn-sm text-muted"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mapHelp"
+            aria-expanded="false"
+            aria-controls="mapHelp"
+          >
+            <i class="bi bi-question-circle"></i>
+          </button>
+        </h4>
         <button id="resetMapView" class="btn btn-outline-secondary btn-sm">
           Reset View
         </button>
+      </div>
+      <div class="collapse" id="mapHelp">
+        <div class="card-body">
+          <p class="mb-0">
+            <strong>Map Navigation:</strong> Click on parcel markers to view
+            details. Use the reset button to return to the default view. Parcels
+            are color-coded by risk level.
+          </p>
+        </div>
       </div>
       <div class="card-body">
         <div id="map" style="height: 400px"></div>
@@ -49,9 +94,103 @@
   <div class="col-md-4 mb-3">
     <div class="card text-white bg-success">
       <div class="card-body">
-        <h5 class="card-title">Average Health Score</h5>
+        <h5 class="card-title">
+          Average Health Score
+          <button
+            class="btn btn-link btn-sm text-white"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#healthHelp"
+            aria-expanded="false"
+            aria-controls="healthHelp"
+          >
+            <i class="bi bi-question-circle"></i>
+          </button>
+        </h5>
         <p class="card-text display-4">{{ stats.average_health }}%</p>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="collapse mb-3" id="healthHelp">
+  <div class="card card-body">
+    <p class="mb-0">
+      <strong>Health Scoring:</strong> Calculated from soil quality and
+      vegetation cover using weighted formula. Higher scores indicate better
+      land health.
+    </p>
+  </div>
+</div>
+{% else %}
+<div class="empty-state text-center py-5">
+  <div class="mb-4">
+    <span class="display-1">🌱</span>
+  </div>
+  <h3>Welcome to Your Land Dashboard</h3>
+  <p class="lead">
+    Start by adding your first land parcel to monitor soil health and vegetation
+    cover.
+  </p>
+  <div class="mt-4">
+    <a
+      href="{{ url_for('main.add_parcel') }}"
+      class="btn btn-success btn-lg me-3"
+    >
+      <i class="bi bi-plus-circle"></i> Add Your First Parcel
+    </a>
+    <button class="btn btn-outline-secondary btn-lg load-sample-data">
+      <i class="bi bi-cloud-download"></i> Load Sample Data
+    </button>
+  </div>
+  <div class="mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title">Quick Help</h6>
+            <ul class="list-unstyled text-start">
+              <li>
+                <strong>Health Score:</strong> Calculated from soil (60%) and
+                vegetation (40%) quality
+              </li>
+              <li>
+                <strong>Risk Levels:</strong> Low (<30), Medium (30-69), High
+                (≥70)
+              </li>
+              <li>
+                <strong>Map:</strong> Interactive view of your parcels with
+                color-coded markers
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="mb-3">
+  <h4>
+    Land Parcels
+    <button
+      class="btn btn-link btn-sm text-muted"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#riskHelp"
+      aria-expanded="false"
+      aria-controls="riskHelp"
+    >
+      <i class="bi bi-question-circle"></i>
+    </button>
+  </h4>
+  <div class="collapse" id="riskHelp">
+    <div class="card card-body">
+      <p class="mb-0">
+        <strong>Risk Levels:</strong> Low (Green: ≥70), Medium (Yellow: 30-69),
+        High (Red: <30). Based on health scores and environmental factors.
+      </p>
     </div>
   </div>
 </div>
@@ -122,66 +261,90 @@
       {% if is_first_visit %}
       document.body.classList.add('first-visit');
       {% endif %}
-        initMap({{ parcels_data|tojson }});
 
-        // Card click events
-        document.querySelectorAll('.parcel-card').forEach(card => {
-            card.addEventListener('click', function() {
-                const lat = parseFloat(this.dataset.lat);
-                const lng = parseFloat(this.dataset.lng);
-                const id = this.dataset.id;
-                if (lat && lng) {
-                    window.MapManager.focusOnParcel(lat, lng, id);
-                }
-            });
-        });
+      // Load sample data button
+      document.querySelectorAll('.load-sample-data').forEach(btn => {
+          btn.addEventListener('click', function() {
+              fetch('/load-sample-data', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  }
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      location.reload();
+                  } else {
+                      alert('Error loading sample data');
+                  }
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+                  alert('Error loading sample data');
+              });
+          });
+      });
+          initMap({{ parcels_data|tojson }});
 
-        // Focus button events
-        document.querySelectorAll('.focus-map-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation(); // Prevent card click event
-                const lat = parseFloat(this.dataset.lat);
-                const lng = parseFloat(this.dataset.lng);
-                const id = this.dataset.id;
-                if (lat && lng) {
-                    window.MapManager.focusOnParcel(lat, lng, id);
-                }
-            });
-        });
+          // Card click events
+          document.querySelectorAll('.parcel-card').forEach(card => {
+              card.addEventListener('click', function() {
+                  const lat = parseFloat(this.dataset.lat);
+                  const lng = parseFloat(this.dataset.lng);
+                  const id = this.dataset.id;
+                  if (lat && lng) {
+                      window.MapManager.focusOnParcel(lat, lng, id);
+                  }
+              });
+          });
 
-        // Reset map view button
-        document.getElementById('resetMapView')?.addEventListener('click', function() {
-            window.MapManager.resetMapView();
-        });
+          // Focus button events
+          document.querySelectorAll('.focus-map-btn').forEach(btn => {
+              btn.addEventListener('click', function(e) {
+                  e.stopPropagation(); // Prevent card click event
+                  const lat = parseFloat(this.dataset.lat);
+                  const lng = parseFloat(this.dataset.lng);
+                  const id = this.dataset.id;
+                  if (lat && lng) {
+                      window.MapManager.focusOnParcel(lat, lng, id);
+                  }
+              });
+          });
 
-        // Keyboard navigation
-        let selectedIndex = -1;
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                selectedIndex = (selectedIndex + 1) % window.parcelData.length;
-                updateSelection();
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                selectedIndex = (selectedIndex - 1 + window.parcelData.length) % window.parcelData.length;
-                updateSelection();
-            } else if (e.key === 'Enter' && selectedIndex >= 0) {
-                e.preventDefault();
-                const parcel = window.parcelData[selectedIndex];
-                window.MapManager.focusOnParcel(parcel.latitude, parcel.longitude, parcel.id);
-            } else if (e.key === 'Escape') {
-                e.preventDefault();
-                window.MapManager.resetMapView();
-                selectedIndex = -1;
-                updateSelection();
-            }
-        });
+          // Reset map view button
+          document.getElementById('resetMapView')?.addEventListener('click', function() {
+              window.MapManager.resetMapView();
+          });
 
-        function updateSelection() {
-            document.querySelectorAll('.parcel-card').forEach((card, index) => {
-                card.classList.toggle('selected', index === selectedIndex);
-            });
-        }
-    });
+          // Keyboard navigation
+          let selectedIndex = -1;
+          document.addEventListener('keydown', function(e) {
+              if (e.key === 'ArrowDown') {
+                  e.preventDefault();
+                  selectedIndex = (selectedIndex + 1) % window.parcelData.length;
+                  updateSelection();
+              } else if (e.key === 'ArrowUp') {
+                  e.preventDefault();
+                  selectedIndex = (selectedIndex - 1 + window.parcelData.length) % window.parcelData.length;
+                  updateSelection();
+              } else if (e.key === 'Enter' && selectedIndex >= 0) {
+                  e.preventDefault();
+                  const parcel = window.parcelData[selectedIndex];
+                  window.MapManager.focusOnParcel(parcel.latitude, parcel.longitude, parcel.id);
+              } else if (e.key === 'Escape') {
+                  e.preventDefault();
+                  window.MapManager.resetMapView();
+                  selectedIndex = -1;
+                  updateSelection();
+              }
+          });
+
+          function updateSelection() {
+              document.querySelectorAll('.parcel-card').forEach((card, index) => {
+                  card.classList.toggle('selected', index === selectedIndex);
+              });
+          }
+      });
 </script>
 {% endblock %}
