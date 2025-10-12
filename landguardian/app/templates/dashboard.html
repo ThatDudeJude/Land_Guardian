@@ -119,66 +119,69 @@
 {% endblock %} {% block scripts %}
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-      initMap({{ parcels_data|tojson }});
+      {% if is_first_visit %}
+      document.body.classList.add('first-visit');
+      {% endif %}
+        initMap({{ parcels_data|tojson }});
 
-      // Card click events
-      document.querySelectorAll('.parcel-card').forEach(card => {
-          card.addEventListener('click', function() {
-              const lat = parseFloat(this.dataset.lat);
-              const lng = parseFloat(this.dataset.lng);
-              const id = this.dataset.id;
-              if (lat && lng) {
-                  window.MapManager.focusOnParcel(lat, lng, id);
-              }
-          });
-      });
+        // Card click events
+        document.querySelectorAll('.parcel-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const lat = parseFloat(this.dataset.lat);
+                const lng = parseFloat(this.dataset.lng);
+                const id = this.dataset.id;
+                if (lat && lng) {
+                    window.MapManager.focusOnParcel(lat, lng, id);
+                }
+            });
+        });
 
-      // Focus button events
-      document.querySelectorAll('.focus-map-btn').forEach(btn => {
-          btn.addEventListener('click', function(e) {
-              e.stopPropagation(); // Prevent card click event
-              const lat = parseFloat(this.dataset.lat);
-              const lng = parseFloat(this.dataset.lng);
-              const id = this.dataset.id;
-              if (lat && lng) {
-                  window.MapManager.focusOnParcel(lat, lng, id);
-              }
-          });
-      });
+        // Focus button events
+        document.querySelectorAll('.focus-map-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent card click event
+                const lat = parseFloat(this.dataset.lat);
+                const lng = parseFloat(this.dataset.lng);
+                const id = this.dataset.id;
+                if (lat && lng) {
+                    window.MapManager.focusOnParcel(lat, lng, id);
+                }
+            });
+        });
 
-      // Reset map view button
-      document.getElementById('resetMapView')?.addEventListener('click', function() {
-          window.MapManager.resetMapView();
-      });
+        // Reset map view button
+        document.getElementById('resetMapView')?.addEventListener('click', function() {
+            window.MapManager.resetMapView();
+        });
 
-      // Keyboard navigation
-      let selectedIndex = -1;
-      document.addEventListener('keydown', function(e) {
-          if (e.key === 'ArrowDown') {
-              e.preventDefault();
-              selectedIndex = (selectedIndex + 1) % window.parcelData.length;
-              updateSelection();
-          } else if (e.key === 'ArrowUp') {
-              e.preventDefault();
-              selectedIndex = (selectedIndex - 1 + window.parcelData.length) % window.parcelData.length;
-              updateSelection();
-          } else if (e.key === 'Enter' && selectedIndex >= 0) {
-              e.preventDefault();
-              const parcel = window.parcelData[selectedIndex];
-              window.MapManager.focusOnParcel(parcel.latitude, parcel.longitude, parcel.id);
-          } else if (e.key === 'Escape') {
-              e.preventDefault();
-              window.MapManager.resetMapView();
-              selectedIndex = -1;
-              updateSelection();
-          }
-      });
+        // Keyboard navigation
+        let selectedIndex = -1;
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = (selectedIndex + 1) % window.parcelData.length;
+                updateSelection();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = (selectedIndex - 1 + window.parcelData.length) % window.parcelData.length;
+                updateSelection();
+            } else if (e.key === 'Enter' && selectedIndex >= 0) {
+                e.preventDefault();
+                const parcel = window.parcelData[selectedIndex];
+                window.MapManager.focusOnParcel(parcel.latitude, parcel.longitude, parcel.id);
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                window.MapManager.resetMapView();
+                selectedIndex = -1;
+                updateSelection();
+            }
+        });
 
-      function updateSelection() {
-          document.querySelectorAll('.parcel-card').forEach((card, index) => {
-              card.classList.toggle('selected', index === selectedIndex);
-          });
-      }
-  });
+        function updateSelection() {
+            document.querySelectorAll('.parcel-card').forEach((card, index) => {
+                card.classList.toggle('selected', index === selectedIndex);
+            });
+        }
+    });
 </script>
 {% endblock %}

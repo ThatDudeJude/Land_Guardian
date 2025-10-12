@@ -1,0 +1,247 @@
+{% extends "base.html" %} {% block title %}Welcome to LandGuardian{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="text-center mb-5">
+        <h1 class="display-4 text-success">
+          🌱 Welcome to LandGuardian, {{ current_user.name }}!
+        </h1>
+        <p class="lead">
+          Let's get you started with monitoring your land health.
+        </p>
+      </div>
+
+      <div class="row mb-5">
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 border-primary">
+            <div class="card-body text-center">
+              <div class="mb-3">
+                <span class="badge bg-primary fs-4">1</span>
+              </div>
+              <h5 class="card-title">Add Your Parcels</h5>
+              <p class="card-text">
+                Start by adding your land parcels with soil and vegetation data.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 border-success">
+            <div class="card-body text-center">
+              <div class="mb-3">
+                <span class="badge bg-success fs-4">2</span>
+              </div>
+              <h5 class="card-title">Monitor Health</h5>
+              <p class="card-text">
+                Track health scores and risk levels in real-time.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100 border-info">
+            <div class="card-body text-center">
+              <div class="mb-3">
+                <span class="badge bg-info fs-4">3</span>
+              </div>
+              <h5 class="card-title">Get Recommendations</h5>
+              <p class="card-text">
+                Receive actionable insights to improve land health.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mb-4">
+        <a
+          href="{{ url_for('main.dashboard') }}"
+          class="btn btn-primary btn-lg me-3"
+          id="start-tour"
+          >Take a Quick Tour</a
+        >
+        <button class="btn btn-outline-secondary btn-lg" id="load-sample">
+          Load Sample Data
+        </button>
+      </div>
+
+      <div class="text-center">
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-link"
+          >Skip to Dashboard</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tour Modals -->
+<div class="modal fade" id="tourModal1" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Welcome to Your Dashboard</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          This is your dashboard where you can see all your land parcels,
+          statistics, and health monitoring data.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="skip-tour">Skip Tour</button>
+        <button class="btn btn-primary" id="tour-next-1">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="tourModal2" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Interactive Map</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          The map shows your parcels with color-coded risk levels. Green for low
+          risk, yellow for medium, red for high risk.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="tour-back-2">Back</button>
+        <button class="btn btn-primary" id="tour-next-2">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="tourModal3" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Your First Parcel</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Click the "Add New Parcel" button to start adding your land parcels.
+          You'll need soil quality and vegetation cover data.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="tour-back-3">Back</button>
+        <button class="btn btn-success" id="tour-finish">Get Started!</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const startTourBtn = document.getElementById('start-tour');
+    const loadSampleBtn = document.getElementById('load-sample');
+    const skipTourBtn = document.getElementById('skip-tour');
+
+    // Load sample data
+    loadSampleBtn.addEventListener('click', function () {
+      fetch('/load-sample-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            alert('Sample data loaded! Redirecting to dashboard...');
+            window.location.href = '{{ url_for("main.dashboard") }}';
+          } else {
+            alert('Error loading sample data');
+          }
+        });
+    });
+
+    // Start tour
+    startTourBtn.addEventListener('click', function () {
+      const modal1 = new bootstrap.Modal(document.getElementById('tourModal1'));
+      modal1.show();
+    });
+
+    // Tour navigation
+    document
+      .getElementById('tour-next-1')
+      .addEventListener('click', function () {
+        bootstrap.Modal.getInstance(
+          document.getElementById('tourModal1')
+        ).hide();
+        const modal2 = new bootstrap.Modal(
+          document.getElementById('tourModal2')
+        );
+        modal2.show();
+      });
+
+    document
+      .getElementById('tour-next-2')
+      .addEventListener('click', function () {
+        bootstrap.Modal.getInstance(
+          document.getElementById('tourModal2')
+        ).hide();
+        const modal3 = new bootstrap.Modal(
+          document.getElementById('tourModal3')
+        );
+        modal3.show();
+      });
+
+    document
+      .getElementById('tour-back-2')
+      .addEventListener('click', function () {
+        bootstrap.Modal.getInstance(
+          document.getElementById('tourModal2')
+        ).hide();
+        const modal1 = new bootstrap.Modal(
+          document.getElementById('tourModal1')
+        );
+        modal1.show();
+      });
+
+    document
+      .getElementById('tour-back-3')
+      .addEventListener('click', function () {
+        bootstrap.Modal.getInstance(
+          document.getElementById('tourModal3')
+        ).hide();
+        const modal2 = new bootstrap.Modal(
+          document.getElementById('tourModal2')
+        );
+        modal2.show();
+      });
+
+    document
+      .getElementById('tour-finish')
+      .addEventListener('click', function () {
+        localStorage.setItem('tour_completed', 'true');
+        window.location.href = '{{ url_for("main.dashboard") }}';
+      });
+
+    skipTourBtn.addEventListener('click', function () {
+      localStorage.setItem('tour_completed', 'true');
+      window.location.href = '{{ url_for("main.dashboard") }}';
+    });
+  });
+</script>
+{% endblock %}

@@ -38,7 +38,8 @@ def dashboard():
             'risk_color': p.risk_color
         } for p in parcels
     ]
-    return render_template('dashboard.html', parcels=parcels, stats=stats, parcels_data=parcels_data)
+    is_first_visit = len(parcels) == 0
+    return render_template('dashboard.html', parcels=parcels, stats=stats, parcels_data=parcels_data, is_first_visit=is_first_visit)
 
 @main_bp.route('/add', methods=['GET', 'POST'])
 @login_required
@@ -139,9 +140,65 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash('Registration successful', 'success')
-        return redirect(url_for('main.login'))
+        return redirect(url_for('main.welcome'))
 
     return render_template('register.html')
+
+@main_bp.route('/welcome')
+@login_required
+def welcome():
+    """
+    Welcome page for new users with onboarding guidance.
+    """
+    return render_template('welcome.html')
+
+@main_bp.route('/load-sample-data', methods=['POST'])
+@login_required
+def load_sample_data():
+    """
+    Load sample parcels for new users.
+    """
+    if LandParcel.query.filter_by(user_id=current_user.id).count() > 0:
+        return jsonify({'success': False, 'message': 'Sample data already loaded'})
+
+    samples = [
+        {
+            'name': 'Sample Farm A',
+            'location': 'Northern Valley',
+            'latitude': 37.7749,
+            'longitude': -122.4194,
+            'soil_quality': 8,
+            'vegetation_cover': 7
+        },
+        {
+            'name': 'Sample Farm B',
+            'location': 'Southern Hills',
+            'latitude': 37.7849,
+            'longitude': -122.4094,
+            'soil_quality': 5,
+            'vegetation_cover': 4
+        }
+    ]
+
+    for data in samples:
+        health_score = LandParcel.calculate_health_score(data['soil_quality'], data['vegetation_cover'])
+        risk_level, risk_label, risk_color = LandParcel.get_risk_category(health_score)
+        parcel = LandParcel(
+            name=data['name'],
+            location=data['location'],
+            latitude=data['latitude'],
+            longitude=data['longitude'],
+            soil_quality=data['soil_quality'],
+            vegetation_cover=data['vegetation_cover'],
+            health_score=health_score,
+            risk_level=risk_level,
+            risk_label=risk_label,
+            risk_color=risk_color,
+            user_id=current_user.id
+        )
+        db.session.add(parcel)
+    db.session.commit()
+    return jsonify({'success': True})
 
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login():

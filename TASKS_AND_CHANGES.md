@@ -285,3 +285,12 @@
   - Modified landguardian/app/models.py: Added database indexes.
   - Modified landguardian/app/routes.py: Implemented password security and rate limiting.
 - **Status:** Completed
+## Task: Implement User Onboarding System
+
+- **Date:** 2025-10-12
+- **Description:** Created welcome flow and guided tour for new users.
+- **Changes Made:**
+  - Modified landguardian/app/routes.py: Updated registration redirect, added welcome and load-sample-data routes.
+  - Created landguardian/app/templates/welcome.html: Welcome page with tour modals and JS.
+  - Modified landguardian/app/templates/dashboard.html: Added first-visit class.
+- **Status:** Completed
