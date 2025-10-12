@@ -28,6 +28,9 @@ class DevelopmentConfig(Config):
     DEBUG = True
     TESTING = False
 
+    # Use console backend for email in development
+    MAIL_SUPPRESS_SEND = True
+
 class ProductionConfig(Config):
     """
     Production configuration with environment variable support.

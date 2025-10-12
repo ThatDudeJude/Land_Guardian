@@ -341,3 +341,10 @@
   - Modified landguardian/config.py: Added mail settings using environment variables.
   - Modified landguardian/app/__init__.py: Added dotenv loading and mail initialization.
 - **Status:** Completed
+## Task: Configure Email Console Backend for Development
+
+- **Date:** 2025-10-12
+- **Description:** Updated config.py to use console backend for email in development environment.
+- **Changes Made:**
+  - Modified landguardian/config.py: Added MAIL_SUPPRESS_SEND = True to DevelopmentConfig.
+- **Status:** Completed

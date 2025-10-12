@@ -116,3 +116,6 @@ Explanation: Implemented user profile page with display and edit functionality f
 ## Prompt: Context: Email service configuration. Task: Ensure that all configurations related to email messaging are set.
 
 Explanation: Added Flask-Mail configurations to config.py using environment variables, created .env file with mail settings, added python-dotenv package to requirements.txt, updated __init__.py to load .env and initialize mail extension.
+## Prompt: Context: Development environment. Task: Update 'landguardian/config.py' to use console as backend for email configuration
+
+Explanation: Added MAIL_SUPPRESS_SEND = True to DevelopmentConfig to use console backend for email in development, preventing actual email sending and printing to console instead.
