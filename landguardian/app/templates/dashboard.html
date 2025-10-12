@@ -429,8 +429,15 @@
     tourManager = new TourManager();
 
     // Auto-start tour only for users who came from welcome tour button
-    if (window.cameFromTour && !localStorage.getItem('tour_completed')) {
-      setTimeout(() => tourManager.startTour(), 1000);
+    // Limit to 3 attempts to prevent abuse
+    const tourAttempts = parseInt(localStorage.getItem('tour_attempts') || '0');
+    const tourCompleted = localStorage.getItem('tour_completed') === 'true';
+
+    if (window.cameFromTour && !tourCompleted && tourAttempts < 3) {
+      setTimeout(() => {
+        tourManager.startTour();
+        localStorage.setItem('tour_attempts', (tourAttempts + 1).toString());
+      }, 1000);
     }
 
     // Tour navigation event listeners
@@ -581,11 +588,6 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Welcome to Your Dashboard</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-        ></button>
       </div>
       <div class="modal-body">
         <p>

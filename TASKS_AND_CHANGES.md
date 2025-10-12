@@ -435,3 +435,18 @@
 - **Changes Made:**
   - Modified landguardian/app/templates/dashboard.html: Changed statistics card selector to '.card.bg-primary' and added scrollIntoView with smooth behavior and 600ms delay for spotlight positioning.
 - **Status:** Completed
+## Task: Implement Tour Attempt Limit
+
+- **Date:** 2025-10-12
+- **Description:** Added limit of 3 tour attempts to prevent abuse while allowing legitimate re-takes.
+- **Changes Made:**
+  - Modified landguardian/app/templates/dashboard.html: Added tour_attempts tracking in localStorage with 3-attempt limit.
+- **Status:** Completed
+## Task: Remove Tour Modal Close Button and Add Mobile Spacing
+
+- **Date:** 2025-10-12
+- **Description:** Removed close button from tour modal to force guided experience and added mobile spacing to welcome page buttons.
+- **Changes Made:**
+  - Modified landguardian/app/templates/dashboard.html: Removed close button from tour modal header.
+  - Modified landguardian/app/templates/welcome.html: Added mb-2 mb-md-0 classes to buttons for mobile spacing.
+- **Status:** Completed
