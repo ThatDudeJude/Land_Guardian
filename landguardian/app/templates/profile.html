@@ -25,8 +25,7 @@
             </div>
             {% if completion == 100 %}
             <span class="badge bg-success">Profile Complete!</span>
-            {% endif %} {% if completion >= 25 and
-            LandParcel.query.filter_by(user_id=current_user.id).count() > 0 %}
+            {% endif %} {% if completion >= 25 and total_parcels > 0 %}
             <span class="badge bg-info">First Parcel Added</span>
             {% endif %}
           </div>
@@ -48,10 +47,7 @@
             </div>
             <div class="col-md-6">
               <h5>Activity Statistics</h5>
-              <p>
-                <strong>Total Parcels:</strong> {{
-                LandParcel.query.filter_by(user_id=current_user.id).count() }}
-              </p>
+              <p><strong>Total Parcels:</strong> {{ total_parcels }}</p>
               <p>
                 <strong>Total Logins:</strong> {{ current_user.total_logins }}
               </p>

@@ -355,3 +355,25 @@
 - **Changes Made:**
   - Modified landguardian/app/__init__.py: Updated init_db to create users and parcels with specified data, geographic clusters, and time distribution.
 - **Status:** Completed
+## Task: Fix Welcome Page Routing for New Users
+
+- **Date:** 2025-10-12
+- **Description:** Ensured new users with no parcels are redirected to welcome page instead of dashboard.
+- **Changes Made:**
+  - Modified landguardian/app/routes.py: Added /welcome route and updated login to check parcel count.
+- **Status:** Completed
+## Task: Improve Welcome Page Card Sizing
+
+- **Date:** 2025-10-12
+- **Description:** Enhanced the welcome page cards to better accommodate text content and ensure mobile responsiveness.
+- **Changes Made:**
+  - Modified landguardian/app/static/css/style.css: Added .welcome-card styles with min-height and padding.
+  - Modified landguardian/app/templates/welcome.html: Applied welcome-card class to all three cards.
+- **Status:** Completed
+## Task: Fix Welcome Page Tour Button
+
+- **Date:** 2025-10-12
+- **Description:** Fixed the "Take a Quick Tour" button in welcome.html to prevent unwanted navigation.
+- **Changes Made:**
+  - Modified landguardian/app/templates/welcome.html: Changed the tour button from <a> with href to <button type="button">.
+- **Status:** Completed

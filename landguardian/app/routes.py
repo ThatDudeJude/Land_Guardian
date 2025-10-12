@@ -147,14 +147,6 @@ def register():
 
     return render_template('register.html')
 
-@main_bp.route('/welcome')
-@login_required
-def welcome():
-    """
-    Welcome page for new users with onboarding guidance.
-    """
-    return render_template('welcome.html')
-
 @main_bp.route('/load-sample-data', methods=['POST'])
 @login_required
 def load_sample_data():
@@ -222,6 +214,11 @@ def login():
             user.total_logins += 1
             db.session.commit()
             session.pop('login_attempts', None)
+
+            # Redirect to welcome page if user has no parcels
+            if LandParcel.query.filter_by(user_id=user.id).count() == 0:
+                return redirect(url_for('main.welcome'))
+
             return redirect(url_for('main.dashboard'))
 
         session['login_attempts'] = attempts + 1
@@ -324,11 +321,12 @@ def profile():
         return redirect(url_for('main.profile'))
 
     # Calculate profile completion
+    total_parcels = LandParcel.query.filter_by(user_id=current_user.id).count()
     completion = 0
     if current_user.name: completion += 25
     if current_user.organization: completion += 25
     if current_user.total_logins > 0: completion += 25
-    if LandParcel.query.filter_by(user_id=current_user.id).count() > 0: completion += 25
+    if total_parcels > 0: completion += 25
 
     # Recent activity (simplified)
     recent_activity = []
@@ -338,7 +336,8 @@ def profile():
 
     return render_template('profile.html',
                          completion=completion,
-                         recent_activity=recent_activity)
+                         recent_activity=recent_activity,
+                         total_parcels=total_parcels)
 
 @main_bp.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
@@ -398,6 +397,14 @@ The LandGuardian Team
         return redirect(url_for('main.login'))
 
     return render_template('forgot_password.html')
+
+@main_bp.route('/welcome')
+@login_required
+def welcome():
+    """
+    Welcome page for new users with no parcels.
+    """
+    return render_template('welcome.html')
 
 @main_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
 def reset_password(token):

@@ -87,7 +87,7 @@ def _define_models():
             last_login = db.Column(db.DateTime)
             total_logins = db.Column(db.Integer, default=0)
 
-            is_active = db.Column(db.Boolean, default=True)
+            active = db.Column(db.Boolean, default=True)
             preferences = db.Column(db.JSON, default=lambda: {
                 'units': 'metric',
                 'map_style': 'satellite',
@@ -144,7 +144,7 @@ def _define_models():
 
             def is_active(self):
 
-                return self.is_active
+                return self.active
 
             @property
 

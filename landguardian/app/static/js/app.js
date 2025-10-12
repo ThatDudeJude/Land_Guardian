@@ -194,3 +194,14 @@ const initFormPreview = () => {
         vegetationInput.addEventListener('input', updatePreview);
     }
 };
+
+// Initialize components when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize map only if map container and data exist
+    if (document.getElementById('map') && window.parcelsData) {
+        initMap(window.parcelsData);
+    }
+
+    // Initialize form preview
+    initFormPreview();
+});
