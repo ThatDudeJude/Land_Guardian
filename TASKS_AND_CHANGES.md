@@ -529,3 +529,10 @@
 - **Changes Made:**
   - Modified landguardian/app/templates/dashboard.html: Updated header layout to include Export CSV button with conditional display.
 - **Status:** Completed
+## Task: Add PDF Export Functionality
+
+- **Date:** 2025-10-13
+- **Description:** Created PDF export utility for generating land parcel reports.
+- **Changes Made:**
+  - Created landguardian/utils/pdf_export.py: Added generate_parcels_pdf function with proper imports and docstring.
+- **Status:** Completed
