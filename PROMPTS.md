@@ -275,3 +275,6 @@ Explanation: Created pdf_export.py in utils directory with generate_parcels_pdf 
 ## Prompt: Context: Enhancing export functionality and adding PDF export. Feature: Export CSV and PDF, Task: Add PDF export route and adapt it to @/landguardian/app/routes.py . Make sure to follow the rules in @/Land-Guardian-Rules.md and @/USER_RULES.md : [code provided]
 
 Explanation: Added PDF export route to routes.py with login_required decorator, user-specific parcel filtering, and proper imports for PDF generation functionality.
+## Prompt: Context: Enhancing export functionality, polishing UI and integration. Feature: Export CSV and PDF, Task: Update the export buttons by integrating it into 'landguardian/app/templates/dashboard.html' 'landguardian/app/routes.py' as a dropdown. Make sure to follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md' : [HTML code provided]
+
+Explanation: Updated dashboard.html to replace the single export button with a Bootstrap dropdown menu containing both CSV and PDF export options.

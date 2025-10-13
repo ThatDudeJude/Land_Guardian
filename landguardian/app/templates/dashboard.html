@@ -14,14 +14,29 @@
   </div>
   <div>
     {% if parcels %}
-    <a
-      href="{{ url_for('main.export_csv') }}"
-      class="btn btn-outline-success me-2"
-    >
-      📊 Export CSV
-    </a>
+    <div class="btn-group me-2">
+      <button
+        type="button"
+        class="btn btn-success dropdown-toggle"
+        data-bs-toggle="dropdown"
+      >
+        📊 Export Data
+      </button>
+      <ul class="dropdown-menu">
+        <li>
+          <a class="dropdown-item" href="{{ url_for('main.export_csv') }}"
+            >📈 Export CSV</a
+          >
+        </li>
+        <li>
+          <a class="dropdown-item" href="{{ url_for('main.export_pdf') }}"
+            >📄 Export PDF Report</a
+          >
+        </li>
+      </ul>
+    </div>
     {% endif %}
-    <a href="{{ url_for('main.add_parcel') }}" class="btn btn-primary btn-lg"
+    <a href="{{ url_for('main.add_parcel') }}" class="btn btn-success"
       >+ Add New Parcel</a
     >
   </div>

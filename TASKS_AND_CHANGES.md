@@ -543,3 +543,10 @@
 - **Changes Made:**
   - Modified landguardian/app/routes.py: Added necessary imports and export_pdf route with user authentication and data filtering.
 - **Status:** Completed
+## Task: Add Export Dropdown to Dashboard
+
+- **Date:** 2025-10-13
+- **Description:** Updated dashboard template to include a Bootstrap dropdown for CSV and PDF export options.
+- **Changes Made:**
+  - Modified landguardian/app/templates/dashboard.html: Replaced single export button with dropdown menu containing CSV and PDF options.
+- **Status:** Completed
