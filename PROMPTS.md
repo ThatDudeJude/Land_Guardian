@@ -290,3 +290,9 @@ Explanation: Added export success alert JavaScript to base.html that displays a 
 ## Prompt: Context: Enhancing export functionality, polishing UI and integration. Feature: Export CSV and PDF, Task: Add success alerts for exports in 'landguardian/app/templates/base.html'. Make sure to follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md' : [JavaScript code provided]
 
 Explanation: Added export success alert JavaScript to base.html that displays a success message when users return from export actions, following JS rules and Flask project guidelines.
+## Prompt: Context: Enhancing export functionality, polishing UI and integration. Feature: Export CSV and PDF, Task: Add individual parcel export to 'landguardian/app/templates/parcel_detail.html'. Make sure to follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md' : [HTML code provided]
+
+Explanation: Added individual parcel export button to the parcel detail card footer with proper button group styling and CSV export link.
+## Prompt: Context: Deployment preparation. Task: Prepare all necessary configuration files for deploying LandGuardian Flask application on Render, including requirements.txt, runtime.txt, render.yaml, and environment variable configurations. Account for Flask, Flask-Login, Flask-Mail, PDF/CSV export utilities, and app factory pattern.
+
+Explanation: Created runtime.txt (Python 3.11.9), updated requirements.txt with gunicorn and psycopg2-binary, created render.yaml with build/start commands and PostgreSQL database, created .env.example with all required environment variables. Config.py already supports production environment variables.

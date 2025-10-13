@@ -579,3 +579,20 @@
   - Created landguardian/utils/__init__.py: Added empty __init__.py to make utils a Python package.
   - Modified landguardian/app/routes.py: Changed import from 'app.utils.pdf_export' to 'utils.pdf_export'.
 - **Status:** Completed
+## Task: Fix NameError for 'app' in forgot_password Route
+
+- **Date:** 2025-10-13
+- **Description:** Resolved NameError where 'app' was not defined in the forgot_password route.
+- **Changes Made:**
+  - Modified landguardian/app/routes.py: Added current_app import and changed app.config reference to current_app.config.
+- **Status:** Completed
+## Task: Prepare Render Deployment Configuration
+
+- **Date:** 2025-10-13
+- **Description:** Created all necessary configuration files for deploying LandGuardian on Render.
+- **Changes Made:**
+  - Created landguardian/runtime.txt: Specified Python 3.11.9
+  - Modified landguardian/requirements.txt: Added gunicorn and psycopg2-binary for production deployment
+  - Created landguardian/render.yaml: Configured web service with build/start commands and PostgreSQL database
+  - Created landguardian/.env.example: Documented all required environment variables
+- **Status:** Completed
