@@ -564,3 +564,18 @@
 - **Changes Made:**
   - Modified landguardian/app/routes.py: Updated export_csv route to handle parcel_id query parameter for individual parcel exports with proper user authentication.
 - **Status:** Completed
+## Task: Add Export Success Alerts
+
+- **Date:** 2025-10-13
+- **Description:** Added success alerts for export actions in the base template.
+- **Changes Made:**
+  - Modified landguardian/app/templates/base.html: Added JavaScript to display success alert when returning from export actions.
+- **Status:** Completed
+## Task: Fix ModuleNotFoundError for PDF Export
+
+- **Date:** 2025-10-13
+- **Description:** Resolved import error for PDF export functionality.
+- **Changes Made:**
+  - Created landguardian/utils/__init__.py: Added empty __init__.py to make utils a Python package.
+  - Modified landguardian/app/routes.py: Changed import from 'app.utils.pdf_export' to 'utils.pdf_export'.
+- **Status:** Completed

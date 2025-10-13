@@ -117,6 +117,20 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+      // Show success message when coming from export
+      if (window.location.search.includes('export=success')) {
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-success alert-dismissible fade show';
+        alert.innerHTML = `
+            <strong>✅ Export successful!</strong> Your data has been downloaded.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document
+          .querySelector('.container')
+          .insertBefore(alert, document.querySelector('.container').firstChild);
+      }
+    </script>
     {% block scripts %}{% endblock %}
   </body>
 </html>

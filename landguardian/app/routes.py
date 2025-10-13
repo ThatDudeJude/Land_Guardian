@@ -11,7 +11,7 @@ import tempfile
 from app import db, mail
 from app.models import LandParcel, User
 from app.recommendations import get_recommendations, generate_soil_recommendations, generate_vegetation_recommendations
-from app.utils.pdf_export import generate_parcels_pdf
+from utils.pdf_export import generate_parcels_pdf
 
 main_bp = Blueprint('main', __name__)
 

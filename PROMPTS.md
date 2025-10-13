@@ -284,3 +284,9 @@ Explanation: Added individual parcel export button to the parcel detail card foo
 ## Prompt: Context: Enhancing export functionality, polishing UI and integration. Feature: Export CSV and PDF, Task: Update CSV export route using the following suggestion to handle single parcel exports and make sure to follow the rules in @/Land-Guardian-Rules.md and @/USER_RULES.md : [code provided]
 
 Explanation: Updated export_csv route in routes.py to handle both bulk export (all user parcels) and single parcel export based on parcel_id query parameter, with proper user authentication and dynamic filename generation.
+## Prompt: Context: Enhancing export functionality, polishing UI and integration. Feature: Export CSV and PDF, Task: Add success alerts for exports in 'landguardian/app/templates/base.html'. Make sure to follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md' : [JavaScript code provided]
+
+Explanation: Added export success alert JavaScript to base.html that displays a success message when users return from export actions, following JS rules and Flask project guidelines.
+## Prompt: Context: Enhancing export functionality, polishing UI and integration. Feature: Export CSV and PDF, Task: Add success alerts for exports in 'landguardian/app/templates/base.html'. Make sure to follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md' : [JavaScript code provided]
+
+Explanation: Added export success alert JavaScript to base.html that displays a success message when users return from export actions, following JS rules and Flask project guidelines.
