@@ -515,3 +515,10 @@
   - Modified landguardian/app/routes.py: Added medium_risk_count to dashboard statistics.
   - Modified landguardian/app/templates/dashboard.html: Added risk alerts and priority parcels section highlighting high-risk parcels with direct links to recommendations.
 - **Status:** Completed
+## Task: Add CSV Export Functionality
+
+- **Date:** 2025-10-13
+- **Description:** Implemented CSV export feature for user land parcel data.
+- **Changes Made:**
+  - Modified landguardian/app/routes.py: Added necessary imports and export_csv route with user authentication and data filtering.
+- **Status:** Completed

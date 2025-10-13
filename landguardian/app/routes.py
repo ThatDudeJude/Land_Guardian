@@ -1,9 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, abort, flash, session
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, abort, flash, session, Response
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message
 from datetime import datetime
 import re
 import logging
+import csv
+from io import StringIO
 
 from app import db, mail
 from app.models import LandParcel, User
@@ -545,3 +547,38 @@ def reset_password(token):
         return redirect(url_for('main.dashboard'))
 
     return render_template('reset_password.html')
+
+@main_bp.route('/export/csv')
+@login_required
+def export_csv():
+    """
+    Export user's land parcels data as CSV file.
+    """
+    # Create CSV in memory
+    output = StringIO()
+    writer = csv.writer(output)
+
+    # Write header
+    writer.writerow(['Name', 'Location', 'Soil Quality', 'Vegetation Cover',
+                    'Health Score', 'Risk Level', 'Last Updated'])
+
+    # Write data for current user only
+    parcels = LandParcel.query.filter_by(user_id=current_user.id).all()
+    for parcel in parcels:
+        writer.writerow([
+            parcel.name,
+            parcel.location,
+            parcel.soil_quality,
+            parcel.vegetation_cover,
+            parcel.health_score,
+            parcel.risk_label,
+            parcel.last_updated.strftime('%Y-%m-%d')
+        ])
+
+    # Prepare response
+    output.seek(0)
+    return Response(
+        output,
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment;filename=landguardian_export.csv"}
+    )

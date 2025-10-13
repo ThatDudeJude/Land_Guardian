@@ -263,3 +263,6 @@ Explanation: Analyzed how settings affect dashboard - map style is retrieved but
 ## Prompt: Okay. Proceed with the implementations except for the notifications. Make sure the Leaflet tile layer and units are updated.
 
 Explanation: Implemented map style changes in app.js to use different tile layers based on user preference (satellite, terrain, street), and added units display in dashboard help section.
+## Prompt: Context: Export functionality. Feature: Export CSV, Task: Add CSV export function using the following suggestion that you can adapt to the current codebase in @/landguardian/app/routes.py . Make sure to only change @/landguardian/app/routes.py and follow the rules in @/Land-Guardian-Rules.md and @/USER_RULES.md : [code provided]
+
+Explanation: Added CSV export functionality to routes.py with proper authentication, user-specific filtering, and Flask Response handling.
