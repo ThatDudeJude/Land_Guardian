@@ -12,7 +12,7 @@ endblock %} {% block content %}
 </nav>
 
 <div class="row">
-  <div class="col-lg-8">
+  <div class="col-lg-5">
     <div
       class="card border-{% if parcel.risk_level == 'Low' %}success{% elif parcel.risk_level == 'Medium' %}warning{% else %}danger{% endif %}"
     >
@@ -106,7 +106,7 @@ endblock %} {% block content %}
     {% endif %}
   </div>
 
-  <div class="col-lg-4">
+  <div class="col-lg-3">
     <div class="card mb-3">
       <div class="card-header">
         <h5 class="card-title mb-0">Health Trend (7 Days)</h5>
@@ -115,8 +115,10 @@ endblock %} {% block content %}
         <canvas id="healthChart"></canvas>
       </div>
     </div>
+  </div>
 
-    <div class="card">
+  <div class="col-lg-4">
+    <div class="card mb-3">
       <div class="card-header bg-info text-white">
         <h5 class="card-title mb-0">💡 Recommendations</h5>
       </div>
@@ -166,7 +168,7 @@ endblock %} {% block content %}
     </div>
 
     <!-- AI Prediction Card -->
-    <div class="card mt-4">
+    <div class="card">
       <div class="card-header bg-primary text-white">
         <h5 class="card-title mb-0">🤖 AI Health Prediction</h5>
       </div>
