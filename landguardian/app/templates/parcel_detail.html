@@ -12,7 +12,7 @@ endblock %} {% block content %}
 </nav>
 
 <div class="row">
-  <div class="col-lg-5">
+  <div class="col-lg-8">
     <div
       class="card border-{% if parcel.risk_level == 'Low' %}success{% elif parcel.risk_level == 'Medium' %}warning{% else %}danger{% endif %}"
     >
@@ -87,6 +87,15 @@ endblock %} {% block content %}
       </div>
     </div>
 
+    <div class="card mt-3">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Health Trend (7 Days)</h5>
+      </div>
+      <div class="card-body">
+        <canvas id="healthChart"></canvas>
+      </div>
+    </div>
+
     {% if parcel.risk_level == 'High' %}
     <div class="alert alert-danger mt-3" role="alert">
       <strong>High Risk Alert:</strong> This parcel requires immediate
@@ -104,17 +113,6 @@ endblock %} {% block content %}
       current practices and document successful management strategies.
     </div>
     {% endif %}
-  </div>
-
-  <div class="col-lg-3">
-    <div class="card mb-3">
-      <div class="card-header">
-        <h5 class="card-title mb-0">Health Trend (7 Days)</h5>
-      </div>
-      <div class="card-body">
-        <canvas id="healthChart"></canvas>
-      </div>
-    </div>
   </div>
 
   <div class="col-lg-4">

@@ -615,3 +615,17 @@
 - **Changes Made:**
   - Modified landguardian/app/templates/dashboard.html: Changed button container classes to use flex-column on mobile and flex-sm-row on larger screens with gap-2 for proper spacing.
 - **Status:** Completed
+## Task: Implement Balanced 3-Column Layout for Parcel Detail
+
+- **Date:** 2025-10-13
+- **Description:** Redesigned parcel detail page layout from 8/4 split to balanced 3-column layout (5/3/4) for better content distribution on large screens.
+- **Changes Made:**
+  - Modified landguardian/app/templates/parcel_detail.html: Changed column classes from col-lg-8/col-lg-4 to col-lg-5/col-lg-3/col-lg-4, distributing main card, health chart, and recommendations/AI prediction more evenly.
+- **Status:** Completed
+## Task: Implement Full-Width Main Content with Sidebar Layout
+
+- **Date:** 2025-10-13
+- **Description:** Redesigned parcel detail page layout to Option 2: Full-width main content with sidebar (8/4 split), moving health trend chart below main parcel card.
+- **Changes Made:**
+  - Modified landguardian/app/templates/parcel_detail.html: Changed column classes to col-lg-8 for main content and col-lg-4 for sidebar, moved health trend chart into main content area below parcel card.
+- **Status:** Completed

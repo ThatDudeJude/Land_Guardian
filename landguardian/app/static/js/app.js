@@ -167,16 +167,22 @@ const initChart = async (parcelId) => {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
+        const dates = data.historical.dates;
+        const scores = data.historical.scores;
         const ctx = document.getElementById('healthChart').getContext('2d');
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: data.map(d => d.date),
+                labels: dates,
                 datasets: [{
                     label: 'Health Score',
-                    data: data.map(d => d.score),
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
+                    data: scores,
+                    // borderColor: 'rgb(75, 192, 192)',
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
                 }]
             },
             options: {
@@ -184,13 +190,24 @@ const initChart = async (parcelId) => {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        max: 100
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Health Score %'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true, 
+                            text: 'Time Period'
+                        }
                     }
                 }
             }
         });
     } catch (error) {
         console.error('Error initializing chart:', error);
+        ctx.closest('.card-body').innerHTML = '<p class="text-danger"> Error loading health trend data</p>';
     }
 };
 

@@ -299,3 +299,21 @@ Explanation: Created runtime.txt (Python 3.11.9), updated requirements.txt with 
 ## Prompt: Context: UI design. Issue: The two buttons in 'landguardian/app/templates/dashboard.html' lines 18 and 39 are not properly spaced in the mobile and tablet devices. Make sure to properly space them so they are not directly touching each other with one on top.
 
 Explanation: Fixed button spacing by changing the container from d-flex justify-content-between to d-flex flex-column flex-sm-row gap-2, ensuring proper vertical stacking on mobile and horizontal layout on larger screens.
+## Prompt: Context: UI design. Issue: The two buttons in 'landguardian/app/templates/dashboard.html' lines 18 and 39 are not properly spaced in the mobile and tablet devices. Make sure to properly space them so they are not directly touching each other with one on top.
+
+Explanation: Fixed button spacing by changing the container from d-flex justify-content-between to d-flex flex-column flex-sm-row gap-2, ensuring proper vertical stacking on mobile and horizontal layout on larger screens.
+
+## Prompt: Take a look at @parcel details and explain to me the styling with illustrations here in the sidebar.
+
+Explanation: Analyzed the parcel detail page styling, explaining the layout structure, color coding system, visual elements, interactive features, responsive design, and accessibility features.
+
+## Prompt: Okay, so the layout structure seems to be too concentrated on the side bar for large screens. Can you suggest a structure ?
+
+Explanation: Provided 4 alternative layout structure options for better balance on large screens, recommending Option 1 (balanced 3-column layout).
+
+## Prompt: Let's go with option 1 so I can judge the design. Make sure to follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md'
+
+Explanation: Implemented Option 1: Balanced 3-column layout (5/3/4 split) for parcel detail page, providing better content distribution on large screens while maintaining mobile responsiveness.
+## Prompt: Okay, Let's try option 2 full-width main content with sidebar
+
+Explanation: Implemented Option 2: Full-width main content with sidebar layout (8/4 split) for parcel detail page, moving the health trend chart below the main parcel card within the main content area for better content flow.
