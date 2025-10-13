@@ -128,7 +128,7 @@ const initMap = (parcels) => {
                             <p class="mb-1"><strong>Risk:</strong> <span class="badge bg-${riskLevel === 'low' ? 'success' : riskLevel === 'medium' ? 'warning' : 'danger'}">${parcel.risk_label}</span></p>
                             <p class="mb-2"><small>Soil: ${parcel.soil_quality}/10 • Vegetation: ${parcel.vegetation_cover}/10</small></p>
                             <div class="d-grid gap-1">
-                                <a href="/parcel/${parcel.id}" class="btn btn-sm btn-${riskLevel === 'low' ? 'success' : riskLevel === 'medium' ? 'warning' : 'danger'}">View Details</a>
+                                <a href="/parcel/${parcel.id}" class="btn btn-sm btn-${riskLevel === 'low' ? 'success' : riskLevel === 'medium' ? 'warning' : 'danger'} text-white">View Details</a>
                                 <button class="btn btn-sm btn-outline-secondary" onclick="window.MapManager.resetMapView()">Reset Map</button>
                             </div>
                         </div>

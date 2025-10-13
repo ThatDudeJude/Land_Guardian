@@ -450,3 +450,24 @@
   - Modified landguardian/app/templates/dashboard.html: Removed close button from tour modal header.
   - Modified landguardian/app/templates/welcome.html: Added mb-2 mb-md-0 classes to buttons for mobile spacing.
 - **Status:** Completed
+## Task: Implement Accessible Auto-Scroll to Map
+
+- **Date:** 2025-10-12
+- **Description:** Added accessible auto-scroll functionality to ensure users see map updates after clicking parcel cards or focus buttons.
+- **Changes Made:**
+  - Modified landguardian/app/templates/dashboard.html: Enhanced card click and focus button events with scroll-to-map, accessibility features (reduced motion, screen reader announcements, keyboard focus), and proper timing.
+- **Status:** Completed
+## Task: Fix Map Marker Link Color Visibility
+
+- **Date:** 2025-10-13
+- **Description:** Improved visibility of "View Details" links in map marker popups by changing text color to white.
+- **Changes Made:**
+  - Modified landguardian/app/static/js/app.js: Added 'text-white' class to View Details link in marker popups.
+- **Status:** Completed
+## Task: Add Settings Navigation Link
+
+- **Date:** 2025-10-13
+- **Description:** Made the settings page accessible by adding a navigation link in the navbar.
+- **Changes Made:**
+  - Modified landguardian/app/templates/base.html: Added "Settings" link to navbar for authenticated users.
+- **Status:** Completed
