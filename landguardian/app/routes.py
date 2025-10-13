@@ -555,17 +555,25 @@ def reset_password(token):
 def export_csv():
     """
     Export user's land parcels data as CSV file.
+    Supports both bulk export (all parcels) and single parcel export.
     """
-    # Create CSV in memory
+    parcel_id = request.args.get('parcel_id', type=int)
+
+    if parcel_id:
+        parcel = LandParcel.query.get_or_404(parcel_id)
+        if parcel.user_id != current_user.id:
+            abort(404)
+        parcels = [parcel]
+        filename = f"parcel_{parcel_id}_export.csv"
+    else:
+        parcels = LandParcel.query.filter_by(user_id=current_user.id).all()
+        filename = "landguardian_export.csv"
+
     output = StringIO()
     writer = csv.writer(output)
-
-    # Write header
     writer.writerow(['Name', 'Location', 'Soil Quality', 'Vegetation Cover',
                     'Health Score', 'Risk Level', 'Last Updated'])
 
-    # Write data for current user only
-    parcels = LandParcel.query.filter_by(user_id=current_user.id).all()
     for parcel in parcels:
         writer.writerow([
             parcel.name,
@@ -577,12 +585,11 @@ def export_csv():
             parcel.last_updated.strftime('%Y-%m-%d')
         ])
 
-    # Prepare response
     output.seek(0)
     return Response(
         output,
         mimetype="text/csv",
-        headers={"Content-Disposition": "attachment;filename=landguardian_export.csv"}
+        headers={"Content-Disposition": f"attachment;filename={filename}"}
     )
 
 @main_bp.route('/export/pdf')

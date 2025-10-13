@@ -557,3 +557,10 @@
 - **Changes Made:**
   - Modified landguardian/app/templates/parcel_detail.html: Added export button group to card footer with CSV export link.
 - **Status:** Completed
+## Task: Update CSV Export Route for Single Parcel Export
+
+- **Date:** 2025-10-13
+- **Description:** Enhanced CSV export route to support both bulk and single parcel exports.
+- **Changes Made:**
+  - Modified landguardian/app/routes.py: Updated export_csv route to handle parcel_id query parameter for individual parcel exports with proper user authentication.
+- **Status:** Completed

@@ -281,3 +281,6 @@ Explanation: Updated dashboard.html to replace the single export button with a B
 ## Prompt: Context: Enhancing export functionality, polishing UI and integration. Feature: Export CSV and PDF, Task: Add individual parcel export to 'landguardian/app/templates/parcel_detail.html'. Make sure to follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md' : [HTML code provided]
 
 Explanation: Added individual parcel export button to the parcel detail card footer with proper button group styling and CSV export link.
+## Prompt: Context: Enhancing export functionality, polishing UI and integration. Feature: Export CSV and PDF, Task: Update CSV export route using the following suggestion to handle single parcel exports and make sure to follow the rules in @/Land-Guardian-Rules.md and @/USER_RULES.md : [code provided]
+
+Explanation: Updated export_csv route in routes.py to handle both bulk export (all user parcels) and single parcel export based on parcel_id query parameter, with proper user authentication and dynamic filename generation.
