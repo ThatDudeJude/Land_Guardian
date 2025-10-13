@@ -536,3 +536,10 @@
 - **Changes Made:**
   - Created landguardian/utils/pdf_export.py: Added generate_parcels_pdf function with proper imports and docstring.
 - **Status:** Completed
+## Task: Add PDF Export Route
+
+- **Date:** 2025-10-13
+- **Description:** Implemented PDF export route for user land parcel reports.
+- **Changes Made:**
+  - Modified landguardian/app/routes.py: Added necessary imports and export_pdf route with user authentication and data filtering.
+- **Status:** Completed

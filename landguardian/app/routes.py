@@ -6,10 +6,12 @@ import re
 import logging
 import csv
 from io import StringIO
+import tempfile
 
 from app import db, mail
 from app.models import LandParcel, User
 from app.recommendations import get_recommendations, generate_soil_recommendations, generate_vegetation_recommendations
+from app.utils.pdf_export import generate_parcels_pdf
 
 main_bp = Blueprint('main', __name__)
 
@@ -581,4 +583,25 @@ def export_csv():
         output,
         mimetype="text/csv",
         headers={"Content-Disposition": "attachment;filename=landguardian_export.csv"}
+    )
+
+@main_bp.route('/export/pdf')
+@login_required
+def export_pdf():
+    """
+    Export user's land parcels data as PDF report.
+    """
+    # Get parcels for current user only
+    parcels = LandParcel.query.filter_by(user_id=current_user.id).all()
+
+    # Create temporary file
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp:
+        generate_parcels_pdf(parcels, tmp.name)
+        tmp.seek(0)
+        pdf_data = tmp.read()
+
+    return Response(
+        pdf_data,
+        mimetype="application/pdf",
+        headers={"Content-Disposition": "attachment;filename=landguardian_report.pdf"}
     )
