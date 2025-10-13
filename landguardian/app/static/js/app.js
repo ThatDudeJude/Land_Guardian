@@ -102,8 +102,26 @@ window.MapManager = {
 const initMap = (parcels) => {
     try {
         const map = L.map('map').setView([37.7749, -122.4194], 12);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
+
+        // Get map style from user preferences (passed from template)
+        const mapStyle = window.mapStyle || 'satellite';
+
+        // Define tile layer URLs based on style
+        const tileLayers = {
+            'satellite': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            'terrain': 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+            'street': 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+        };
+
+        // Attribution based on map style
+        const attributions = {
+            'satellite': 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+            'terrain': 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+            'street': '© OpenStreetMap contributors'
+        };
+
+        L.tileLayer(tileLayers[mapStyle], {
+            attribution: attributions[mapStyle]
         }).addTo(map);
 
         // Initialize MapManager

@@ -155,6 +155,10 @@
                 vegetation (40%) quality
               </li>
               <li>
+                <strong>Units:</strong> Currently set to {{
+                current_user.preferences.get('units', 'metric')|title }}
+              </li>
+              <li>
                 <strong>Risk Levels:</strong> Low (<30), Medium (30-69), High
                 (≥70)
               </li>
@@ -270,6 +274,8 @@
   window.parcelsData = {{ parcels_data|tojson }};
   window.showTour = {{ show_tour|tojson }};
   window.cameFromTour = {{ came_from_tour|tojson }};
+  window.mapStyle = {{ map_style|tojson }};
+  window.units = {{ current_user.preferences.get('units', 'metric')|tojson }};
 </script>
 <script>
   // Tour Manager Class

@@ -225,3 +225,21 @@ Explanation: Identified that settings route exists but is not accessible via nav
 ## Prompt: Okay. You can implement the recommendation. Make sure to follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md'.
 
 Explanation: Added "Settings" link to the navigation bar in base.html for authenticated users, making the settings page discoverable and accessible through the main UI.
+## Prompt: Context: UX and backend integration. Issue: The 'landguardian/app/templates/settings.html' functionality is not linked to the backend. Also, the notifications feature isn't yet introdued in the backend. Remove the Notifications UI in 'landguardian/app/templates/settings.html' and integrate the settings feature in the backend. Let me know your suggestions before implementing anything for my approval
+
+Explanation: Analyzed settings integration - backend route already exists and works, notifications UI should be disabled with "coming soon" note rather than removed entirely.
+
+## Prompt: Okay. You can implement the recommendation. Make sure to follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md'.
+
+Explanation: Waited for user clarification on approach.
+
+## Prompt: Let's go with option 2. I will add that feature later. Make sure to follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md' when implementing.
+
+Explanation: Implemented option 2 - disabled notifications UI with "coming soon" note, keeping the interface for future implementation while clearly indicating it's not yet available.
+## Prompt: What exactly do the settings update in the 'landguardian/app/templates/dashboard.html'?
+
+Explanation: Analyzed how settings affect dashboard - map style is retrieved but not applied, units setting is saved but not used in UI.
+
+## Prompt: Okay. Proceed with the implementations except for the notifications. Make sure the Leaflet tile layer and units are updated.
+
+Explanation: Implemented map style changes in app.js to use different tile layers based on user preference (satellite, terrain, street), and added units display in dashboard help section.

@@ -471,3 +471,18 @@
 - **Changes Made:**
   - Modified landguardian/app/templates/base.html: Added "Settings" link to navbar for authenticated users.
 - **Status:** Completed
+## Task: Update Settings UI for Future Notifications
+
+- **Date:** 2025-10-13
+- **Description:** Disabled notifications UI in settings template and added "coming soon" note for future implementation.
+- **Changes Made:**
+  - Modified landguardian/app/templates/settings.html: Added disabled attribute to notification checkboxes and "coming soon" message.
+- **Status:** Completed
+## Task: Implement Map Style and Units Settings
+
+- **Date:** 2025-10-13
+- **Description:** Made settings functional by implementing map style changes and units display.
+- **Changes Made:**
+  - Modified landguardian/app/static/js/app.js: Added dynamic tile layer selection based on map_style preference.
+  - Modified landguardian/app/templates/dashboard.html: Added mapStyle and units to JavaScript globals, and units info to help section.
+- **Status:** Completed
