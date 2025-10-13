@@ -522,3 +522,10 @@
 - **Changes Made:**
   - Modified landguardian/app/routes.py: Added necessary imports and export_csv route with user authentication and data filtering.
 - **Status:** Completed
+## Task: Add Export CSV Button to Dashboard
+
+- **Date:** 2025-10-13
+- **Description:** Added Export CSV button to the dashboard header for data export functionality.
+- **Changes Made:**
+  - Modified landguardian/app/templates/dashboard.html: Updated header layout to include Export CSV button with conditional display.
+- **Status:** Completed

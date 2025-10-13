@@ -266,3 +266,6 @@ Explanation: Implemented map style changes in app.js to use different tile layer
 ## Prompt: Context: Export functionality. Feature: Export CSV, Task: Add CSV export function using the following suggestion that you can adapt to the current codebase in @/landguardian/app/routes.py . Make sure to only change @/landguardian/app/routes.py and follow the rules in @/Land-Guardian-Rules.md and @/USER_RULES.md : [code provided]
 
 Explanation: Added CSV export functionality to routes.py with proper authentication, user-specific filtering, and Flask Response handling.
+## Prompt: Context: Export functionality. Feature: Export CSV, Task: Add export button using the following suggestion that you can adapt to the current structure in 'landguardian/app/templates/dashboard.html' . Make sure to only change 'landguardian/app/templates/dashboard.html' and follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md' : [HTML code provided]
+
+Explanation: Updated dashboard.html header to include Export CSV button alongside Add New Parcel button, with conditional display only when parcels exist.
