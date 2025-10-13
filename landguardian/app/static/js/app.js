@@ -102,8 +102,26 @@ window.MapManager = {
 const initMap = (parcels) => {
     try {
         const map = L.map('map').setView([37.7749, -122.4194], 12);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
+
+        // Get map style from user preferences (passed from template)
+        const mapStyle = window.mapStyle || 'satellite';
+
+        // Define tile layer URLs based on style
+        const tileLayers = {
+            'satellite': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            'terrain': 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+            'street': 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+        };
+
+        // Attribution based on map style
+        const attributions = {
+            'satellite': 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+            'terrain': 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+            'street': '© OpenStreetMap contributors'
+        };
+
+        L.tileLayer(tileLayers[mapStyle], {
+            attribution: attributions[mapStyle]
         }).addTo(map);
 
         // Initialize MapManager
@@ -128,7 +146,7 @@ const initMap = (parcels) => {
                             <p class="mb-1"><strong>Risk:</strong> <span class="badge bg-${riskLevel === 'low' ? 'success' : riskLevel === 'medium' ? 'warning' : 'danger'}">${parcel.risk_label}</span></p>
                             <p class="mb-2"><small>Soil: ${parcel.soil_quality}/10 • Vegetation: ${parcel.vegetation_cover}/10</small></p>
                             <div class="d-grid gap-1">
-                                <a href="/parcel/${parcel.id}" class="btn btn-sm btn-${riskLevel === 'low' ? 'success' : riskLevel === 'medium' ? 'warning' : 'danger'}">View Details</a>
+                                <a href="/parcel/${parcel.id}" class="btn btn-sm btn-${riskLevel === 'low' ? 'success' : riskLevel === 'medium' ? 'warning' : 'danger'} text-white">View Details</a>
                                 <button class="btn btn-sm btn-outline-secondary" onclick="window.MapManager.resetMapView()">Reset Map</button>
                             </div>
                         </div>

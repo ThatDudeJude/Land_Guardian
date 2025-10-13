@@ -218,6 +218,10 @@
                 vegetation (40%) quality
               </li>
               <li>
+                <strong>Units:</strong> Currently set to {{
+                current_user.preferences.get('units', 'metric')|title }}
+              </li>
+              <li>
                 <strong>Risk Levels:</strong> Low (<30), Medium (30-69), High
                 (≥70)
               </li>
@@ -333,6 +337,8 @@
   window.parcelsData = {{ parcels_data|tojson }};
   window.showTour = {{ show_tour|tojson }};
   window.cameFromTour = {{ came_from_tour|tojson }};
+  window.mapStyle = {{ map_style|tojson }};
+  window.units = {{ current_user.preferences.get('units', 'metric')|tojson }};
 </script>
 <script>
   // Tour Manager Class
@@ -573,19 +579,58 @@
       });
     });
 
-    // Card click events
+    // Card click events with accessibility and auto-scroll
     document.querySelectorAll('.parcel-card').forEach((card) => {
       card.addEventListener('click', function () {
         const lat = parseFloat(this.dataset.lat);
         const lng = parseFloat(this.dataset.lng);
         const id = this.dataset.id;
         if (lat && lng) {
-          window.MapManager.focusOnParcel(lat, lng, id);
+          // Check for reduced motion preference
+          const prefersReducedMotion = window.matchMedia(
+            '(prefers-reduced-motion: reduce)'
+          ).matches;
+
+          // Scroll to map with accessibility considerations
+          const mapElement = document.getElementById('map');
+          mapElement.scrollIntoView({
+            behavior: prefersReducedMotion ? 'auto' : 'smooth',
+            block: 'center',
+          });
+
+          // Announce the action to screen readers
+          const announcement = document.createElement('div');
+          announcement.setAttribute('aria-live', 'polite');
+          announcement.setAttribute('aria-atomic', 'true');
+          announcement.className = 'sr-only';
+          announcement.textContent = `Focusing map on ${
+            this.querySelector('.card-title').textContent
+          }`;
+          document.body.appendChild(announcement);
+
+          // Focus the map container for keyboard users and focus parcel
+          setTimeout(
+            () => {
+              mapElement.focus({ preventScroll: true });
+              mapElement.setAttribute('tabindex', '-1'); // Make focusable if not already
+
+              // Then focus the map on the parcel
+              window.MapManager.focusOnParcel(lat, lng, id);
+
+              // Remove announcement after delay
+              setTimeout(() => {
+                if (document.body.contains(announcement)) {
+                  document.body.removeChild(announcement);
+                }
+              }, 1000);
+            },
+            prefersReducedMotion ? 100 : 500
+          );
         }
       });
     });
 
-    // Focus button events
+    // Focus button events with accessibility and auto-scroll
     document.querySelectorAll('.focus-map-btn').forEach((btn) => {
       btn.addEventListener('click', function (e) {
         e.stopPropagation(); // Prevent card click event
@@ -593,7 +638,47 @@
         const lng = parseFloat(this.dataset.lng);
         const id = this.dataset.id;
         if (lat && lng) {
-          window.MapManager.focusOnParcel(lat, lng, id);
+          // Check for reduced motion preference
+          const prefersReducedMotion = window.matchMedia(
+            '(prefers-reduced-motion: reduce)'
+          ).matches;
+
+          // Scroll to map with accessibility considerations
+          const mapElement = document.getElementById('map');
+          mapElement.scrollIntoView({
+            behavior: prefersReducedMotion ? 'auto' : 'smooth',
+            block: 'center',
+          });
+
+          // Announce the action to screen readers
+          const announcement = document.createElement('div');
+          announcement.setAttribute('aria-live', 'polite');
+          announcement.setAttribute('aria-atomic', 'true');
+          announcement.className = 'sr-only';
+          announcement.textContent = `Focusing map on ${
+            this.closest('.parcel-card').querySelector('.card-title')
+              .textContent
+          }`;
+          document.body.appendChild(announcement);
+
+          // Focus the map container for keyboard users and focus parcel
+          setTimeout(
+            () => {
+              mapElement.focus({ preventScroll: true });
+              mapElement.setAttribute('tabindex', '-1'); // Make focusable if not already
+
+              // Then focus the map on the parcel
+              window.MapManager.focusOnParcel(lat, lng, id);
+
+              // Remove announcement after delay
+              setTimeout(() => {
+                if (document.body.contains(announcement)) {
+                  document.body.removeChild(announcement);
+                }
+              }, 1000);
+            },
+            prefersReducedMotion ? 100 : 500
+          );
         }
       });
     });

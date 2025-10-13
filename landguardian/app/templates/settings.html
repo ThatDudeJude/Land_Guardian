@@ -32,14 +32,15 @@
 
             <div class="mb-3">
               <label class="form-label">Notifications</label>
+              <small class="text-muted d-block mb-2">Coming soon - notification system will be available in a future update</small>
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="email" name="email" {% if current_user.preferences.notifications.email %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox" id="email" name="email" disabled {% if current_user.preferences.notifications.email %}checked{% endif %}>
                 <label class="form-check-label" for="email">
                   Email notifications
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="browser" name="browser" {% if current_user.preferences.notifications.browser %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox" id="browser" name="browser" disabled {% if current_user.preferences.notifications.browser %}checked{% endif %}>
                 <label class="form-check-label" for="browser">
                   Browser notifications
                 </label>
