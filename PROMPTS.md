@@ -214,3 +214,6 @@ Explanation: Created recommendations.py module with the provided functions for s
 ## Prompt: No, just add the functions in a recommendations.py file. We will do the rest later step by step. Make sure to follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md'
 
 Explanation: Created landguardian/app/recommendations.py with the recommendation functions, including proper docstrings and following PEP 8 standards.
+## Prompt: Context: Recommendation BE. Task: Import 'landguardian/app/recommendations.py' in `app/routes.py` and update the parcel_detail route to pass recommendations to the template.
+
+Explanation: Imported get_recommendations from app.recommendations and updated parcel_detail route to generate and pass recommendations to the template.

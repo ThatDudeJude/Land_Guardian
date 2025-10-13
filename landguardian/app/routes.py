@@ -7,6 +7,7 @@ import logging
 
 from app import db, mail
 from app.models import LandParcel, User
+from app.recommendations import get_recommendations
 
 main_bp = Blueprint('main', __name__)
 
@@ -164,7 +165,11 @@ def parcel_detail(parcel_id):
     parcel = LandParcel.query.get_or_404(parcel_id)
     if parcel.user_id != current_user.id:
         abort(404)
-    return render_template('parcel_detail.html', parcel=parcel)
+
+    # Generate recommendations for the parcel
+    recommendations = get_recommendations(parcel)
+
+    return render_template('parcel_detail.html', parcel=parcel, recommendations=recommendations)
 
 @main_bp.route('/api/health-trend/<int:parcel_id>')
 @login_required

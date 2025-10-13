@@ -457,3 +457,10 @@
 - **Changes Made:**
   - Created landguardian/app/recommendations.py: Added functions for soil, vegetation, and priority action recommendations with proper docstrings.
 - **Status:** Completed
+## Task: Integrate Recommendations into Parcel Detail Route
+
+- **Date:** 2025-10-13
+- **Description:** Integrated the recommendation system into the parcel detail backend route.
+- **Changes Made:**
+  - Modified landguardian/app/routes.py: Added import for get_recommendations and updated parcel_detail route to generate and pass recommendations.
+- **Status:** Completed

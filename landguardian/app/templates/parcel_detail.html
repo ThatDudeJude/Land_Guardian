@@ -101,31 +101,51 @@ endblock %} {% block content %}
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <h5 class="card-title mb-0">Recommended Actions</h5>
+      <div class="card-header bg-info text-white">
+        <h5 class="card-title mb-0">💡 Recommendations</h5>
       </div>
       <div class="card-body">
-        <ul class="list-unstyled">
-          {% if parcel.soil_quality <= 4 %}
-          <li>✓ Implement soil conservation practices</li>
-          <li>✓ Start cover cropping program</li>
-          <li>✓ Add organic matter to soil</li>
-          {% elif parcel.soil_quality <= 7 %}
-          <li>✓ Conduct regular soil testing</li>
-          <li>✓ Maintain current soil management practices</li>
-          {% else %}
-          <li>✓ Document successful soil management practices</li>
-          {% endif %} {% if parcel.vegetation_cover <= 4 %}
-          <li>✓ Plant native vegetation species</li>
-          <li>✓ Implement erosion control measures</li>
-          <li>✓ Monitor vegetation growth regularly</li>
-          {% elif parcel.vegetation_cover <= 7 %}
-          <li>✓ Maintain current vegetation cover</li>
-          <li>✓ Monitor for invasive species</li>
-          {% else %}
-          <li>✓ Document successful vegetation management</li>
-          {% endif %}
-        </ul>
+        <div class="row">
+          <div class="col-12 mb-3">
+            <h6>🌱 Soil Recommendations</h6>
+            <div class="list-group mb-3">
+              {% for rec in recommendations.soil %}
+              <div
+                class="list-group-item d-flex justify-content-between align-items-center"
+              >
+                {{ rec }}
+                <button
+                  class="btn btn-sm btn-outline-success mark-implemented"
+                  data-recommendation="{{ rec }}"
+                >
+                  ✓ Done
+                </button>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="col-12 mb-3">
+            <h6>🌳 Vegetation Recommendations</h6>
+            <div class="list-group mb-3">
+              {% for rec in recommendations.vegetation %}
+              <div
+                class="list-group-item d-flex justify-content-between align-items-center"
+              >
+                {{ rec }}
+                <button
+                  class="btn btn-sm btn-outline-success mark-implemented"
+                  data-recommendation="{{ rec }}"
+                >
+                  ✓ Done
+                </button>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-{{ parcel.risk_color }} mt-3">
+          <strong>🎯 Priority Action:</strong> {{ recommendations.priority }}
+        </div>
       </div>
     </div>
   </div>
@@ -134,6 +154,26 @@ endblock %} {% block content %}
 <script>
   document.addEventListener('DOMContentLoaded', function() {
       initChart({{ parcel.id }});
+
+      // Recommendation marking functionality
+      document.querySelectorAll('.mark-implemented').forEach(button => {
+          button.addEventListener('click', function() {
+              const recommendation = this.dataset.recommendation;
+              this.innerHTML = '✅ Implemented';
+              this.classList.remove('btn-outline-success');
+              this.classList.add('btn-success');
+              this.disabled = true;
+
+              // Show success message
+              const alert = document.createElement('div');
+              alert.className = 'alert alert-success alert-dismissible fade show mt-2';
+              alert.innerHTML = `
+                  <strong>Great!</strong> Marked as implemented: ${recommendation}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              `;
+              this.closest('.list-group-item').appendChild(alert);
+          });
+      });
   });
 </script>
 {% endblock %}
