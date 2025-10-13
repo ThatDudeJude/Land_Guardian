@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, abort, flash, session, Response
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, abort, flash, session, Response, current_app
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message
 from datetime import datetime
@@ -465,8 +465,8 @@ def forgot_password():
             reset_url = url_for('main.reset_password', token=token, _external=True)
 
             msg = Message('Password Reset Request - LandGuardian',
-                         sender=app.config['MAIL_DEFAULT_SENDER'],
-                         recipients=[email])
+                          sender=current_app.config['MAIL_DEFAULT_SENDER'],
+                          recipients=[email])
             msg.body = f'''Hello {user.name},
 
 You have requested to reset your password for your LandGuardian account.

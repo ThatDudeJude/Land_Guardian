@@ -29,7 +29,8 @@ class DevelopmentConfig(Config):
     TESTING = False
 
     # Use console backend for email in development
-    MAIL_SUPPRESS_SEND = True
+    MAIL_SUPPRESS_SEND = os.environ.get('MAIL_SUPPRESS_SEND', 'False')
+    MAIL_DEBUG = True
 
 class ProductionConfig(Config):
     """
