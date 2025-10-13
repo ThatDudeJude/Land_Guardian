@@ -464,3 +464,18 @@
 - **Changes Made:**
   - Modified landguardian/app/routes.py: Added import for get_recommendations and updated parcel_detail route to generate and pass recommendations.
 - **Status:** Completed
+## Task: Update Parcel Detail Template with Recommendations
+
+- **Date:** 2025-10-13
+- **Description:** Updated parcel_detail.html to display AI-powered recommendations with interactive marking functionality.
+- **Changes Made:**
+  - Modified landguardian/app/templates/parcel_detail.html: Replaced static recommendations with dynamic AI-powered recommendations including soil, vegetation, and priority action sections, plus JavaScript for marking recommendations as implemented.
+- **Status:** Completed
+## Task: Add Recommendation Summaries to Dashboard
+
+- **Date:** 2025-10-13
+- **Description:** Added recommendation summaries and risk alerts to the dashboard.
+- **Changes Made:**
+  - Modified landguardian/app/routes.py: Added medium_risk_count to dashboard statistics.
+  - Modified landguardian/app/templates/dashboard.html: Added risk alerts and priority parcels section highlighting high-risk parcels with direct links to recommendations.
+- **Status:** Completed

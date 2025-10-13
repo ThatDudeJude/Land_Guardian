@@ -217,3 +217,13 @@ Explanation: Created landguardian/app/recommendations.py with the recommendation
 ## Prompt: Context: Recommendation BE. Task: Import 'landguardian/app/recommendations.py' in `app/routes.py` and update the parcel_detail route to pass recommendations to the template.
 
 Explanation: Imported get_recommendations from app.recommendations and updated parcel_detail route to generate and pass recommendations to the template.
+## Prompt: Context: Recommendations feature. Task: Update `templates/parcel_detail.html` to display recommendations: Use the following as a suggestion and adapt it to already existing code. [HTML code provided]
+
+Explanation: Updated parcel_detail.html to display AI-powered recommendations with soil, vegetation, and priority action sections, including JavaScript for marking recommendations as implemented.
+## Prompt: Context: Recommendations and dashboard. Task: Add recommendation summaries to the dashboard route. You can adapt the following suggestion to fit the current dashboard view. [code provided]
+
+Explanation: Updated dashboard route to include medium_risk_count and added risk alerts and priority parcels section to dashboard template, highlighting high-risk parcels with direct links to recommendations.
+
+## Prompt: Please adapt the following suggestion to the existing code plans for @/landguardian/app/templates/dashboard.html . [HTML code provided]
+
+Explanation: Adapted the provided HTML suggestion to integrate with existing dashboard template, adding risk alerts and priority parcels section that displays high-risk parcels with health scores and direct links to view recommendations.

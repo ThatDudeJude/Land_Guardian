@@ -7,7 +7,7 @@ import logging
 
 from app import db, mail
 from app.models import LandParcel, User
-from app.recommendations import get_recommendations
+from app.recommendations import get_recommendations, generate_soil_recommendations, generate_vegetation_recommendations
 
 main_bp = Blueprint('main', __name__)
 
@@ -93,10 +93,12 @@ def dashboard():
         # Normal logic for regular users
         total_parcels = len(parcels)
         high_risk_count = sum(1 for p in parcels if p.risk_level == 'High')
+        medium_risk_count = sum(1 for p in parcels if p.risk_level == 'Medium')
         average_health = sum(p.health_score for p in parcels) / total_parcels if total_parcels > 0 else 0
         stats = {
             'total': total_parcels,
             'high_risk': high_risk_count,
+            'medium_risk': medium_risk_count,
             'average_health': round(average_health, 1)
         }
         parcels_data = [
@@ -119,7 +121,23 @@ def dashboard():
     map_style = current_user.preferences.get('map_style', 'satellite')
     show_tour = came_from_tour  # Only show tour for tour visitors
 
-    return render_template('dashboard.html', parcels=parcels, stats=stats, parcels_data=parcels_data, is_first_visit=is_first_visit, map_style=map_style, show_tour=show_tour, came_from_tour=came_from_tour)
+    # Generate recommendation summaries for high-priority parcels
+    high_risk_parcels = [p for p in parcels if p.risk_level == "High"]
+    medium_risk_parcels = [p for p in parcels if p.risk_level == "Medium"]
+
+    # Get top recommendations for high-risk parcels
+    urgent_recommendations = []
+    for parcel in high_risk_parcels[:3]:  # Limit to top 3 high-risk parcels
+        soil_recs = generate_soil_recommendations(parcel.soil_quality)
+        veg_recs = generate_vegetation_recommendations(parcel.vegetation_cover)
+        urgent_recommendations.append({
+            'parcel_name': parcel.name,
+            'priority_action': f"⚠️ IMMEDIATE: Health score {parcel.health_score}% - Critical attention needed",
+            'top_soil_rec': soil_recs[0] if soil_recs else None,
+            'top_veg_rec': veg_recs[0] if veg_recs else None
+        })
+
+    return render_template('dashboard.html', parcels=parcels, stats=stats, parcels_data=parcels_data, is_first_visit=is_first_visit, map_style=map_style, show_tour=show_tour, came_from_tour=came_from_tour, urgent_recommendations=urgent_recommendations)
 
 @main_bp.route('/add', methods=['GET', 'POST'])
 @login_required

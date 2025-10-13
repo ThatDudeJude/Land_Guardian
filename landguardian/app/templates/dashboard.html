@@ -122,6 +122,69 @@
     </p>
   </div>
 </div>
+
+{% if stats.high_risk > 0 %}
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="alert alert-danger">
+      <h5>🚨 Immediate Attention Needed</h5>
+      <p>
+        You have <strong>{{ stats.high_risk }} parcels</strong> with high
+        degradation risk that require immediate action.
+      </p>
+      <a href="#high-risk-parcels" class="btn btn-outline-danger btn-sm"
+        >View High Risk Parcels</a
+      >
+    </div>
+  </div>
+</div>
+{% endif %} {% if stats.medium_risk > 0 %}
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="alert alert-warning">
+      <h5>⚠️ Monitoring Required</h5>
+      <p>
+        You have <strong>{{ stats.medium_risk }} parcels</strong> that need
+        close monitoring to prevent further degradation.
+      </p>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Priority Parcels Needing Attention -->
+<div id="high-risk-parcels" class="row mt-4">
+  <div class="col-12">
+    <h4>🎯 Priority Parcels Needing Attention</h4>
+    <div class="row">
+      {% for parcel in parcels %} {% if parcel.risk_level == "High" %}
+      <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card border-danger">
+          <div class="card-header bg-danger text-white">
+            <h6 class="mb-0">{{ parcel.name }}</h6>
+          </div>
+          <div class="card-body">
+            <p class="mb-2">
+              <strong>Health Score:</strong> {{ parcel.health_score }}%
+            </p>
+            <p class="mb-2">
+              <strong>Issues:</strong> {% if parcel.soil_quality < 5 %}Low soil
+              quality{% endif %} {% if parcel.soil_quality < 5 and
+              parcel.vegetation_cover < 5 %} and {% endif %} {% if
+              parcel.vegetation_cover < 5 %}low vegetation cover{% endif %}
+            </p>
+            <a
+              href="{{ url_for('main.parcel_detail', parcel_id=parcel.id) }}"
+              class="btn btn-sm btn-danger"
+              >View Recommendations</a
+            >
+          </div>
+        </div>
+      </div>
+      {% endif %} {% endfor %}
+    </div>
+  </div>
+</div>
 {% else %}
 <div class="empty-state text-center py-5">
   <div class="mb-4">
