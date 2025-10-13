@@ -69,6 +69,22 @@ endblock %} {% block content %}
           </tbody>
         </table>
       </div>
+      <div class="card-footer">
+        <div class="btn-group">
+          <a
+            href="{{ url_for('main.parcel_detail', parcel_id=parcel.id) }}"
+            class="btn btn-outline-{{ parcel.risk_color }} btn-sm"
+          >
+            View Details
+          </a>
+          <a
+            href="{{ url_for('main.export_csv') }}?parcel_id={{ parcel.id }}"
+            class="btn btn-outline-secondary btn-sm"
+          >
+            Export CSV
+          </a>
+        </div>
+      </div>
     </div>
 
     {% if parcel.risk_level == 'High' %}

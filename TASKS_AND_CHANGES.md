@@ -550,3 +550,10 @@
 - **Changes Made:**
   - Modified landguardian/app/templates/dashboard.html: Replaced single export button with dropdown menu containing CSV and PDF options.
 - **Status:** Completed
+## Task: Add Individual Parcel Export to Detail Page
+
+- **Date:** 2025-10-13
+- **Description:** Added individual parcel export functionality to the parcel detail template.
+- **Changes Made:**
+  - Modified landguardian/app/templates/parcel_detail.html: Added export button group to card footer with CSV export link.
+- **Status:** Completed

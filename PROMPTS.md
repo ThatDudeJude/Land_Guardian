@@ -278,3 +278,6 @@ Explanation: Added PDF export route to routes.py with login_required decorator, 
 ## Prompt: Context: Enhancing export functionality, polishing UI and integration. Feature: Export CSV and PDF, Task: Update the export buttons by integrating it into 'landguardian/app/templates/dashboard.html' 'landguardian/app/routes.py' as a dropdown. Make sure to follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md' : [HTML code provided]
 
 Explanation: Updated dashboard.html to replace the single export button with a Bootstrap dropdown menu containing both CSV and PDF export options.
+## Prompt: Context: Enhancing export functionality, polishing UI and integration. Feature: Export CSV and PDF, Task: Add individual parcel export to 'landguardian/app/templates/parcel_detail.html'. Make sure to follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md' : [HTML code provided]
+
+Explanation: Added individual parcel export button to the parcel detail card footer with proper button group styling and CSV export link.
