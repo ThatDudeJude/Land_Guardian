@@ -164,6 +164,23 @@ endblock %} {% block content %}
         </div>
       </div>
     </div>
+
+    <!-- AI Prediction Card -->
+    <div class="card mt-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="card-title mb-0">🤖 AI Health Prediction</h5>
+      </div>
+      <div class="card-body">
+        <div id="predictionContainer">
+          <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading AI prediction...</span>
+            </div>
+            <p class="mt-2">Analyzing trends with machine learning...</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %} {% block scripts %}
@@ -190,6 +207,61 @@ endblock %} {% block content %}
               this.closest('.list-group-item').appendChild(alert);
           });
       });
+
+      // AI Prediction functionality
+      fetch('/api/health-trend/{{ parcel.id }}')
+        .then(response => response.json())
+        .then(data => {
+          const container = document.getElementById('predictionContainer');
+
+          if (data.ai_generated) {
+            const prediction = data.prediction;
+            const trendIcon = prediction.trend === 'improving' ? '📈' :
+                            prediction.trend === 'declining' ? '📉' : '➡️';
+            const trendColor = prediction.trend === 'improving' ? 'success' :
+                             prediction.trend === 'declining' ? 'danger' : 'secondary';
+
+            container.innerHTML = `
+              <div class="row text-center">
+                <div class="col-md-4">
+                  <h3 class="text-${trendColor}">${prediction.next_score}%</h3>
+                  <small class="text-muted">Predicted Score</small>
+                </div>
+                <div class="col-md-4">
+                  <h3>${trendIcon}</h3>
+                  <small class="text-${trendColor}">${prediction.trend}</small>
+                </div>
+                <div class="col-md-4">
+                  <h3>${Math.round(prediction.confidence * 100)}%</h3>
+                  <small class="text-muted">AI Confidence</small>
+                </div>
+              </div>
+              <div class="progress mt-3" style="height: 10px;">
+                <div class="progress-bar bg-${trendColor}"
+                     style="width: ${Math.round(prediction.confidence * 100)}%">
+                </div>
+              </div>
+              <div class="mt-2">
+                <small class="text-muted">
+                  <i>Machine learning prediction based on historical trend analysis</i>
+                </small>
+              </div>
+            `;
+          } else {
+            container.innerHTML = `
+              <p class="text-muted text-center">
+                <i>Collect more data to enable AI predictions</i>
+              </p>
+            `;
+          }
+        })
+        .catch(error => {
+          container.innerHTML = `
+            <p class="text-danger text-center">
+              <i>Unable to load AI prediction</i>
+            </p>
+          `;
+        });
   });
 </script>
 {% endblock %}

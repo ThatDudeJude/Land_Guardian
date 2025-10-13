@@ -11,6 +11,7 @@ import tempfile
 from app import db, mail
 from app.models import LandParcel, User
 from app.recommendations import get_recommendations, generate_soil_recommendations, generate_vegetation_recommendations
+from app.utils.predictor import TrendPredictor
 from utils.pdf_export import generate_parcels_pdf
 
 main_bp = Blueprint('main', __name__)
@@ -88,11 +89,23 @@ def dashboard():
     parcels = LandParcel.query.filter_by(user_id=current_user.id).all()
     came_from_tour = request.args.get('tour') == 'true'
 
+    # Calculate AI insights
+    predictor = TrendPredictor()
+    declining_parcels = 0
+    for parcel in parcels:
+        historical = predictor.generate_historical_data(parcel.health_score)
+        _, _, trend = predictor.predict_future_health(historical)
+        if trend == "declining":
+            declining_parcels += 1
+
     # Use dummy data for tour visitors with no parcels
     if came_from_tour and len(parcels) == 0:
         parcels, stats = get_tour_dummy_data()
         parcels_data = parcels  # Use dummy parcels for map
         is_first_visit = False  # Show full dashboard for tour
+        # Calculate AI insights for dummy data
+        dummy_declining = sum(1 for p in parcels if predictor.predict_future_health(predictor.generate_historical_data(p['health_score']))[2] == "declining")
+        declining_parcels = dummy_declining
     else:
         # Normal logic for regular users
         total_parcels = len(parcels)
@@ -141,7 +154,7 @@ def dashboard():
             'top_veg_rec': veg_recs[0] if veg_recs else None
         })
 
-    return render_template('dashboard.html', parcels=parcels, stats=stats, parcels_data=parcels_data, is_first_visit=is_first_visit, map_style=map_style, show_tour=show_tour, came_from_tour=came_from_tour, urgent_recommendations=urgent_recommendations)
+    return render_template('dashboard.html', parcels=parcels, stats=stats, parcels_data=parcels_data, is_first_visit=is_first_visit, map_style=map_style, show_tour=show_tour, came_from_tour=came_from_tour, urgent_recommendations=urgent_recommendations, declining_parcels=declining_parcels)
 
 @main_bp.route('/add', methods=['GET', 'POST'])
 @login_required
@@ -188,8 +201,13 @@ def parcel_detail(parcel_id):
     if parcel.user_id != current_user.id:
         abort(404)
 
-    # Generate recommendations for the parcel
-    recommendations = get_recommendations(parcel)
+    # Get AI prediction for recommendations
+    predictor = TrendPredictor()
+    historical_scores = predictor.generate_historical_data(parcel.health_score)
+    predicted_score, confidence, trend = predictor.predict_future_health(historical_scores)
+
+    # Pass AI insights to recommendations
+    recommendations = get_recommendations(parcel, trend, confidence)
 
     return render_template('parcel_detail.html', parcel=parcel, recommendations=recommendations)
 
@@ -197,18 +215,35 @@ def parcel_detail(parcel_id):
 @login_required
 def health_trend(parcel_id):
     """
-    API endpoint for parcel health trend data.
+    API endpoint for parcel health trend data with AI predictions.
     """
     parcel = LandParcel.query.get_or_404(parcel_id)
     if parcel.user_id != current_user.id:
         abort(404)
-    # Dummy trend data for demonstration
-    trend = [
-        {'date': '2023-01', 'score': max(0, parcel.health_score - 5)},
-        {'date': '2023-02', 'score': max(0, parcel.health_score - 2)},
-        {'date': '2023-03', 'score': parcel.health_score},
-    ]
-    return jsonify(trend)
+
+    # Generate historical data using the predictor
+    predictor = TrendPredictor()
+    historical_scores = predictor.generate_historical_data(parcel.health_score)
+
+    # Get AI prediction
+    predicted_score, confidence, trend = predictor.predict_future_health(historical_scores)
+
+    # Create dates for historical data
+    dates = [f"Month {i+1}" for i in range(len(historical_scores))]
+
+    return jsonify({
+        'historical': {
+            'dates': dates,
+            'scores': historical_scores
+        },
+        'prediction': {
+            'next_score': round(predicted_score, 1),
+            'confidence': round(confidence, 2),
+            'trend': trend,
+            'date': 'Next Month'
+        },
+        'ai_generated': True
+    })
 
 @main_bp.route('/register', methods=['GET', 'POST'])
 def register():

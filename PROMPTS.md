@@ -296,3 +296,6 @@ Explanation: Added individual parcel export button to the parcel detail card foo
 ## Prompt: Context: Deployment preparation. Task: Prepare all necessary configuration files for deploying LandGuardian Flask application on Render, including requirements.txt, runtime.txt, render.yaml, and environment variable configurations. Account for Flask, Flask-Login, Flask-Mail, PDF/CSV export utilities, and app factory pattern.
 
 Explanation: Created runtime.txt (Python 3.11.9), updated requirements.txt with gunicorn and psycopg2-binary, created render.yaml with build/start commands and PostgreSQL database, created .env.example with all required environment variables. Config.py already supports production environment variables.
+## Prompt: Context: UI design. Issue: The two buttons in 'landguardian/app/templates/dashboard.html' lines 18 and 39 are not properly spaced in the mobile and tablet devices. Make sure to properly space them so they are not directly touching each other with one on top.
+
+Explanation: Fixed button spacing by changing the container from d-flex justify-content-between to d-flex flex-column flex-sm-row gap-2, ensuring proper vertical stacking on mobile and horizontal layout on larger screens.

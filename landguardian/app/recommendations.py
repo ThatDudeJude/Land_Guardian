@@ -85,19 +85,44 @@ def get_priority_action(risk_level, health_score):
     else:
         return f"✅ STABLE: Health score {health_score}% - Continue current management"
 
-def get_recommendations(parcel):
+def get_ai_enhanced_insight(predicted_trend, confidence):
+    """Add AI-powered insights based on predictions"""
+    if confidence < 0.6:
+        return "More data needed for reliable AI predictions"
+
+    if predicted_trend == "declining":
+        return "🤖 AI predicts potential decline - consider preventive measures"
+    elif predicted_trend == "improving":
+        return "🤖 AI predicts improvement - current practices are effective"
+    else:
+        return "🤖 AI predicts stable conditions - maintain current management"
+
+def get_recommendations(parcel, predicted_trend=None, confidence=0):
     """
     Generate comprehensive recommendations for a land parcel.
 
     Args:
         parcel: LandParcel model instance with soil_quality, vegetation_cover,
                 risk_level, and health_score attributes
+        predicted_trend (str, optional): AI predicted trend ('improving', 'declining', 'stable')
+        confidence (float, optional): AI prediction confidence (0-1)
 
     Returns:
-        dict: Dictionary containing soil, vegetation, and priority recommendations
+        dict: Dictionary containing soil, vegetation, priority recommendations, and AI flag
     """
+    soil_recs = generate_soil_recommendations(parcel.soil_quality)
+    veg_recs = generate_vegetation_recommendations(parcel.vegetation_cover)
+    priority = get_priority_action(parcel.risk_level, parcel.health_score)
+
+    # Add AI insight if available
+    ai_insight = ""
+    if predicted_trend:
+        ai_insight = get_ai_enhanced_insight(predicted_trend, confidence)
+        priority = f"{priority} {ai_insight}"
+
     return {
-        'soil': generate_soil_recommendations(parcel.soil_quality),
-        'vegetation': generate_vegetation_recommendations(parcel.vegetation_cover),
-        'priority': get_priority_action(parcel.risk_level, parcel.health_score)
+        'soil': soil_recs,
+        'vegetation': veg_recs,
+        'priority': priority,
+        'uses_ai': bool(predicted_trend)
     }
