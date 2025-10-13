@@ -42,3 +42,5 @@ git
 .hypothesis
 instance/
 .DS_Store
+
+../AI_FEATURE_PROMPTS.md
