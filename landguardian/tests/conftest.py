@@ -48,3 +48,13 @@ def init_database(app):
 
         db.session.commit()
     return db
+
+@pytest.fixture(scope='session')
+def coverage():
+    """Enable code coverage reporting."""
+    import coverage
+    cov = coverage.Coverage()
+    cov.start()
+    yield
+    cov.stop()
+    cov.save()
