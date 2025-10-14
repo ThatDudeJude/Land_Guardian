@@ -58,7 +58,8 @@ def create_app(config_class=Config):
             import random
             from datetime import datetime, timedelta
 
-            if User.query.count() == 0:
+            # Only create demo users if not in testing mode
+            if User.query.count() == 0 and not app.config.get('TESTING', False):
                 # Create users
                 users_data = [
                     {'email': 'john@greenvalleyfarms.com', 'name': 'John Farmer', 'organization': 'Green Valley Farms', 'role': 'farmer'},
@@ -80,7 +81,8 @@ def create_app(config_class=Config):
                     users.append(user)
                 db.session.commit()
 
-            if LandParcel.query.count() == 0:
+            # Only create demo parcels if not in testing mode
+            if LandParcel.query.count() == 0 and not app.config.get('TESTING', False):
                 users = User.query.all()
                 # Create parcels distributed among users
                 parcels_data = [
