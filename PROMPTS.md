@@ -174,6 +174,14 @@ Explanation: Fixed ValueError by conditionally hiding "View Details" links for t
 ## Prompt: Okay. This is a good observation and suggestion. Proceed with implementation and make sure to follow 'Land-Guardian-Rules.md' and 'USER_RULES.md'.
 
 Explanation: Implemented tour improvements: fixed modal disappearing issue by adjusting tour logic for tour users, added 4th step to highlight parcel cards, updated modal content and navigation, and made tour steps dynamic based on user type (tour vs regular users).
+
+## Prompt: Context: UI for buttons. Issue: The bootstrap buttons seem to be varying their widths and heights based on the container they are in or the text lengths or when containers use responsive sizing classes. Task: I want you to suggest how to give the buttons fixed sizes, prevent them from expanding with flex or grid, use consistent padding and font size and avoid .w-100 and d-block on button. Make sure that the width of buttons in a group are wrapped in a .btn-group so they have he same height. Don't implement anything yet, just provide suggestions in the sidebar.
+
+Explanation: Provided suggestions for button sizing consistency including custom CSS classes, Bootstrap overrides, responsive considerations, and button group implementation.
+
+## Prompt: You can go ahead and implement your suggestions. Make sure to follow the rules in 'Land-Guardian-Rules.md' (see below for file content) and 'USER_RULES.md' (see below for file content).
+
+Explanation: Implemented button sizing fixes by adding custom CSS classes (.btn-fixed) with fixed dimensions, Bootstrap overrides to prevent expansion, responsive considerations for mobile devices, and applied the classes to all buttons in dashboard.html and parcel_detail.html templates.
 ## Prompt: Okay. This is absolutely suitable. Implement the above recommendations and make sure to follow the rules in 'Land-Guardian-Rules.md' and 'USER_RULES.md'.
 
 Explanation: Implemented scroll-into-view functionality for tour highlights using element.scrollIntoView() with smooth behavior and center positioning, and fixed the statistics card selector from '.row.mb-4 .card' to '.card.bg-primary' to avoid highlighting the map card instead.
@@ -317,3 +325,103 @@ Explanation: Implemented Option 1: Balanced 3-column layout (5/3/4 split) for pa
 ## Prompt: Okay, Let's try option 2 full-width main content with sidebar
 
 Explanation: Implemented Option 2: Full-width main content with sidebar layout (8/4 split) for parcel detail page, moving the health trend chart below the main parcel card within the main content area for better content flow.
+
+## Prompt: Context: Testing. Task: Now I want to proceed with testing. First we will set up the testing infrastructure for the app.Update requirements.txt with testing dependencies: [code block]
+
+Explanation: Updated requirements.txt with testing dependencies: pytest==7.4.0, pytest-flask==1.2.0, and requests==2.31.0 for comprehensive testing infrastructure setup.
+
+## Prompt: Context: Testing. Task: Take the following code suggestion and write it in the 'landguardian/tests/conftest.py' file. [code provided]
+
+Explanation: Implemented pytest configuration in conftest.py with TestConfig class using in-memory SQLite database, app and client fixtures, and init_database fixture for test data setup, adapted to LandGuardian's model structure.
+
+## Prompt: Context: Testing. Task: Update config.py to include TestingConfig class [code provided]
+
+Explanation: Added TestingConfig class to config.py with TESTING=True, in-memory SQLite database URI, and disabled CSRF for proper test environment configuration.
+
+## Prompt: Context: Testing (models) Task: Write the following in 'landguardian/tests/test_models.py' [code provided]
+
+Explanation: Implemented comprehensive model tests for LandGuardian including user creation with password hashing, land parcel creation with health scoring, user-parcel relationships, and edge cases for health score calculations.
+
+## Prompt: Context: Testing. Issue: ImportError: cannot import name '_request_ctx_stack' from 'flask'. Task: Update requirements.txt with compatible versions [Flask==2.3.3, Flask-SQLAlchemy==3.0.5, Werkzeug==2.3.7, etc.]
+
+Explanation: Resolved Flask 3.0 compatibility issues by downgrading to stable Flask 2.3.3 with compatible versions of Flask-SQLAlchemy 3.0.5 and Werkzeug 2.3.7 to ensure pytest-flask compatibility and eliminate _request_ctx_stack import errors.
+
+## Prompt: Context: Testing configuration. Issue: The test users in 'landguardian/app/__init__.py' are being created during testing. Task: Update the files so that these users are not created.
+
+Explanation: Added conditional check `and not app.config.get('TESTING', False)` to prevent demo users from being created during testing, ensuring clean test environment with only test-specific data.
+
+## Prompt: Update this type to prevent creation of land parcels during testing
+
+Explanation: Extended the conditional check to also prevent demo land parcels from being created during testing, ensuring tests run with only the specific test data defined in conftest.py fixtures.
+
+## Prompt: Context: Testing. Task: Use the following code suggestion to create route tests for LandGuardian endpoints [code provided]
+
+Explanation: Implemented comprehensive route tests for LandGuardian including dashboard, add parcel, parcel detail, health trend API, and error handling endpoints, ensuring proper HTTP responses, data validation, and API functionality.
+
+## Prompt: Context: Testing. Issue: Routes are protected with @login_required decorator. Task: Update route tests to expect 302 redirects to login instead of 200 responses.
+
+Explanation: Updated route tests to correctly expect 302 redirect status codes and login URL redirects for protected endpoints, matching the actual Flask-Login behavior when users are not authenticated.
+
+## Prompt: Check that the methods test_nonexistent_parcel and test_invalid_parcel_api of the TestRoutes test class in 'landguardian/tests/test_routes.py' are properly configured for testing routes in 'landguardian/app/routes.py'
+
+Explanation: Updated the error handling tests to expect 302 redirects instead of 404 responses, since all routes are protected with @login_required decorator and will redirect to login before checking for parcel existence.
+
+## Prompt: Add the tasks performed and changes to the 'TASKS_AND_CHANGES.md' (see below for file content) file.
+
+Explanation: Added the route test fixes to TASKS_AND_CHANGES.md, documenting the correction of error handling tests to properly expect authentication redirects instead of 404 responses.
+
+## Prompt: Context: Testing. Task: Use the following code suggestion to create tests for utility functions and AI components [code provided]
+
+Explanation: Implemented comprehensive tests for utility functions and AI components including TrendPredictor ML functionality, recommendation engine, and historical data generation, ensuring proper validation of AI predictions, recommendation logic, and edge cases.
+
+## Prompt: Context: Testing. Task: Use the following code suggestion to create integration tests for LandGuardian [code provided]
+
+Explanation: Implemented comprehensive integration tests covering full parcel lifecycle (creation to viewing), export functionality, error handling, and mobile responsiveness, ensuring end-to-end workflow validation and cross-component integration testing.
+
+## Prompt: Go through the tests in 'landguardian/tests/test_integration.py' and 'landguardian/app/routes.py' and update the test to match the expected status codes.
+
+Explanation: Updated all integration tests to expect 302 redirect status codes instead of 200 responses, since all routes are protected with @login_required decorator and will redirect to login before any business logic is executed.
+
+## Prompt: Context: Test runner and continuous integration configuration. Task: Use the following code suggestion to create pytest.ini for test configuration [code provided]
+
+Explanation: Created pytest.ini configuration file with test discovery patterns, verbose output, short traceback format, and deprecation warning filtering for clean test execution in LandGuardian project.
+
+## Prompt: Context: Test runner and continuous integration configuration. Task: Use the following code suggestion to create run_tests.py for easy test execution [code provided]
+
+Explanation: Created run_tests.py script providing a convenient way to execute the complete LandGuardian test suite with proper exit codes for CI/CD integration and developer workflow.
+
+## Prompt: Context: Test runner and continuous integration configuration. Task: Use the following suggestion to add test commands to requirements.txt development section [code provided]
+
+Explanation: Added coverage package to requirements.txt for code coverage analysis, organizing testing dependencies under a clear development section for better dependency management.
+
+## Prompt: Context: Test runner and continuous integration configuration. Task: Use the following suggestion to create .github/workflows/test.yml for GitHub Actions [code provided]
+
+Explanation: Created GitHub Actions workflow for automated testing on every push and pull request, ensuring continuous integration with proper Python setup, dependency installation, and test execution.
+
+## Prompt: Context: Test runner and continuous integration configuration. Task: Use the following suggestion to add coverage reporting by adding the code to 'landguardian/tests/conftest.py' [code provided]
+
+Explanation: Added coverage fixture to conftest.py for session-level code coverage reporting, enabling automated coverage measurement during test execution with proper start/stop/save lifecycle.
+
+## Prompt: Context: Api error. Issue: AttributeError: 'dict' object has no attribute 'risk_level' from line 142 of 'landguardian/app/routes.py'. Task: Fix the error by handling both dict and object types for parcels.
+
+Explanation: Fixed AttributeError by adding type checking to handle both dictionary objects (from dummy data) and SQLAlchemy model instances (from database), ensuring compatibility with tour mode and regular user data.
+
+## Prompt: Context: Quick tour feature update. Issue: Tour was implemented before AI features and doesn't showcase new AI capabilities. Task: Update tour to include AI features demonstration.
+
+Explanation: Updated quick tour to showcase AI features by extending dummy data with AI predictions, updating health trend API to handle demo parcels, adding 5th tour step for AI insights, and updating tour modals and navigation to demonstrate complete AI-powered functionality.
+
+## Prompt: Look good now! Now I want you to reduce the modal backdrop opacity in the tour mode to 0.2.
+
+Explanation: Reduced tour modal backdrop opacity from 0.7 to 0.2 in style.css for better visibility of underlying content during guided tour.
+
+## Prompt: Okay now implement the fix.
+
+Explanation: Added window.stats assignment to dashboard template to fix priority alerts tour step not showing.
+
+## Prompt: Okay. This looks good. Now I want you to add one more step in the tour. The Proiority Parcels Needing Attention step, which shows the section in line 195 of 'landguardian/app/templates/dashboard.html' (see below for file content) . See how you can carefully implement this additional step, following the rules in 'Land-Guardian-Rules.md' (see below for file content)  and 'USER_RULES.md' (see below for file content) .
+
+Explanation: Added Priority Parcels Needing Attention as step 7 in the tour, including updated getMaxSteps logic, event listeners, and new tour modal with educational content about the priority parcels section.
+
+## Prompt: Append all previous unadded prompts and tasks and changes to @/PROMPTS.md  and @/TASKS_AND_CHANGES.md
+
+Explanation: Appended all previous unadded prompts and tasks to PROMPTS.md and TASKS_AND_CHANGES.md files.

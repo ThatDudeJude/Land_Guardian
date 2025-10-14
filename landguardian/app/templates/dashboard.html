@@ -477,6 +477,28 @@
             );
           }
           break;
+        case 7:
+          if (isTourUser || hasParcels) {
+            // Check if there are high-risk parcels to show in the priority section
+            const hasHighRiskParcels =
+              window.stats && window.stats.high_risk > 0;
+            if (hasHighRiskParcels) {
+              this.highlightElement(
+                '#high-risk-parcels',
+                'Priority Parcels Needing Attention'
+              );
+            } else {
+              // Skip to next step if no high-risk parcels
+              this.nextStep();
+              return;
+            }
+          } else {
+            this.highlightElement(
+              '.btn-primary[href*="add_parcel"]',
+              'Add New Parcel'
+            );
+          }
+          break;
       }
     }
 
@@ -550,12 +572,16 @@
       const hasPriorityAlerts =
         window.stats &&
         (window.stats.high_risk > 0 || window.stats.medium_risk > 0);
+      const hasHighRiskParcels = window.stats && window.stats.high_risk > 0;
       const baseSteps =
         window.cameFromTour ||
         (window.parcelsData && window.parcelsData.length > 0)
           ? 5
           : 3;
-      return hasPriorityAlerts ? baseSteps + 1 : baseSteps;
+      let totalSteps = baseSteps;
+      if (hasPriorityAlerts) totalSteps += 1; // Step 6: Priority Alerts
+      if (hasHighRiskParcels) totalSteps += 1; // Step 7: Priority Parcels Section
+      return totalSteps;
     }
 
     endTour() {
@@ -649,6 +675,11 @@
       tourManager.nextStep();
     });
 
+    document.getElementById('tour-next-7')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal7')).hide();
+      tourManager.nextStep();
+    });
+
     document.getElementById('tour-finish')?.addEventListener('click', () => {
       const currentModal = document.querySelector('.modal.show');
       if (currentModal) {
@@ -659,6 +690,11 @@
 
     document.getElementById('tour-back-6')?.addEventListener('click', () => {
       bootstrap.Modal.getInstance(document.getElementById('tourModal6')).hide();
+      tourManager.prevStep();
+    });
+
+    document.getElementById('tour-back-7')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal7')).hide();
       tourManager.prevStep();
     });
 
@@ -996,6 +1032,37 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" id="tour-back-6">Back</button>
+        <button class="btn btn-primary" id="tour-next-6">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="tourModal7" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Priority Parcels Needing Attention</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          🎯 This section highlights your highest-priority parcels that need
+          immediate attention. Each card shows the parcel name, current health
+          score, and specific issues identified by the system.
+        </p>
+        <p>
+          Click "View Recommendations" on any card to see detailed action plans
+          with soil improvement tips, vegetation restoration strategies, and
+          AI-powered insights for better land management.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="tour-back-7">Back</button>
         <button class="btn btn-success" id="tour-finish">Complete Tour!</button>
       </div>
     </div>
