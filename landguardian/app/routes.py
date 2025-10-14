@@ -139,17 +139,22 @@ def dashboard():
     show_tour = came_from_tour  # Only show tour for tour visitors
 
     # Generate recommendation summaries for high-priority parcels
-    high_risk_parcels = [p for p in parcels if p.risk_level == "High"]
-    medium_risk_parcels = [p for p in parcels if p.risk_level == "Medium"]
+    high_risk_parcels = [p for p in parcels if isinstance(p, dict) and p.get('risk_level') == "High" or hasattr(p, 'risk_level') and p.risk_level == "High"]
+    medium_risk_parcels = [p for p in parcels if isinstance(p, dict) and p.get('risk_level') == "Medium" or hasattr(p, 'risk_level') and p.risk_level == "Medium"]
 
     # Get top recommendations for high-risk parcels
     urgent_recommendations = []
     for parcel in high_risk_parcels[:3]:  # Limit to top 3 high-risk parcels
-        soil_recs = generate_soil_recommendations(parcel.soil_quality)
-        veg_recs = generate_vegetation_recommendations(parcel.vegetation_cover)
+        soil_quality = parcel.soil_quality if hasattr(parcel, 'soil_quality') else parcel.get('soil_quality', 5)
+        vegetation_cover = parcel.vegetation_cover if hasattr(parcel, 'vegetation_cover') else parcel.get('vegetation_cover', 5)
+        health_score = parcel.health_score if hasattr(parcel, 'health_score') else parcel.get('health_score', 50)
+        name = parcel.name if hasattr(parcel, 'name') else parcel.get('name', 'Unknown Parcel')
+
+        soil_recs = generate_soil_recommendations(soil_quality)
+        veg_recs = generate_vegetation_recommendations(vegetation_cover)
         urgent_recommendations.append({
-            'parcel_name': parcel.name,
-            'priority_action': f"⚠️ IMMEDIATE: Health score {parcel.health_score}% - Critical attention needed",
+            'parcel_name': name,
+            'priority_action': f"⚠️ IMMEDIATE: Health score {health_score}% - Critical attention needed",
             'top_soil_rec': soil_recs[0] if soil_recs else None,
             'top_veg_rec': veg_recs[0] if veg_recs else None
         })
