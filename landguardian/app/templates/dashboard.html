@@ -210,11 +210,15 @@
               parcel.vegetation_cover < 5 %} and {% endif %} {% if
               parcel.vegetation_cover < 5 %}low vegetation cover{% endif %}
             </p>
+            {% if not came_from_tour %}
             <a
               href="{{ url_for('main.parcel_detail', parcel_id=parcel.id) }}"
               class="btn btn-sm btn-danger btn-fixed"
               >View Recommendations</a
             >
+            {% else %}
+            <span class="badge bg-secondary">Sample Parcel</span>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -376,6 +380,7 @@
   window.cameFromTour = {{ came_from_tour|tojson }};
   window.mapStyle = {{ map_style|tojson }};
   window.units = {{ current_user.preferences.get('units', 'metric')|tojson }};
+  window.stats = {{ stats|tojson }};
 </script>
 <script>
   // Tour Manager Class
@@ -427,7 +432,44 @@
           break;
         case 4:
           if (isTourUser || hasParcels) {
+            this.highlightElement('.card.bg-info', 'AI Insights & Predictions');
+          } else {
+            this.highlightElement(
+              '.btn-primary[href*="add_parcel"]',
+              'Add New Parcel'
+            );
+          }
+          break;
+        case 5:
+          if (isTourUser || hasParcels) {
             this.highlightElement('.parcel-card', 'Land Parcel Cards');
+          } else {
+            this.highlightElement(
+              '.btn-primary[href*="add_parcel"]',
+              'Add New Parcel'
+            );
+          }
+          break;
+        case 6:
+          if (isTourUser || hasParcels) {
+            // Check if there are priority alerts to show
+            const hasHighRisk = window.stats && window.stats.high_risk > 0;
+            const hasMediumRisk = window.stats && window.stats.medium_risk > 0;
+            if (hasHighRisk) {
+              this.highlightElement(
+                '.alert.alert-danger',
+                'Priority Alerts - High Risk'
+              );
+            } else if (hasMediumRisk) {
+              this.highlightElement(
+                '.alert.alert-warning',
+                'Priority Alerts - Medium Risk'
+              );
+            } else {
+              // Skip to next step if no alerts
+              this.nextStep();
+              return;
+            }
           } else {
             this.highlightElement(
               '.btn-primary[href*="add_parcel"]',
@@ -505,10 +547,15 @@
     }
 
     getMaxSteps() {
-      return window.cameFromTour ||
+      const hasPriorityAlerts =
+        window.stats &&
+        (window.stats.high_risk > 0 || window.stats.medium_risk > 0);
+      const baseSteps =
+        window.cameFromTour ||
         (window.parcelsData && window.parcelsData.length > 0)
-        ? 4
-        : 3;
+          ? 5
+          : 3;
+      return hasPriorityAlerts ? baseSteps + 1 : baseSteps;
     }
 
     endTour() {
@@ -582,9 +629,37 @@
       tourManager.prevStep();
     });
 
-    document.getElementById('tour-finish')?.addEventListener('click', () => {
+    document.getElementById('tour-back-5')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal5')).hide();
+      tourManager.prevStep();
+    });
+
+    document.getElementById('tour-next-4')?.addEventListener('click', () => {
       bootstrap.Modal.getInstance(document.getElementById('tourModal4')).hide();
+      tourManager.nextStep();
+    });
+
+    document.getElementById('tour-next-5')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal5')).hide();
+      tourManager.nextStep();
+    });
+
+    document.getElementById('tour-next-6')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal6')).hide();
+      tourManager.nextStep();
+    });
+
+    document.getElementById('tour-finish')?.addEventListener('click', () => {
+      const currentModal = document.querySelector('.modal.show');
+      if (currentModal) {
+        bootstrap.Modal.getInstance(currentModal).hide();
+      }
       tourManager.endTour();
+    });
+
+    document.getElementById('tour-back-6')?.addEventListener('click', () => {
+      bootstrap.Modal.getInstance(document.getElementById('tourModal6')).hide();
+      tourManager.prevStep();
     });
 
     document.getElementById('skip-tour')?.addEventListener('click', () => {
@@ -848,6 +923,32 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
+        <h5 class="modal-title">AI Insights & Predictions</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          🤖 Our AI analyzes historical trends to predict future land health.
+          The AI Insights card shows parcels predicted to decline, helping you
+          take preventive action before problems worsen.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="tour-back-4">Back</button>
+        <button class="btn btn-primary" id="tour-next-4">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="tourModal5" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
         <h5 class="modal-title">Land Parcel Cards</h5>
         <button
           type="button"
@@ -858,13 +959,44 @@
       <div class="modal-body">
         <p>
           Each card represents a land parcel with its health score, risk level,
-          and location. Click on a card to view detailed information or use the
-          "Focus Map" button to center the map on that parcel.
+          and location. Click on a card to view detailed information including
+          AI predictions, health trends, and personalized recommendations.
         </p>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" id="tour-back-4">Back</button>
-        <button class="btn btn-success" id="tour-finish">Get Started!</button>
+        <button class="btn btn-secondary" id="tour-back-5">Back</button>
+        <button class="btn btn-primary" id="tour-next-5">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="tourModal6" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Priority Alerts & Monitoring</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          🚨 LandGuardian proactively monitors your parcels and alerts you when
+          attention is needed. High-risk parcels require immediate action, while
+          medium-risk parcels need close monitoring to prevent further
+          degradation.
+        </p>
+        <p>
+          These alerts help you prioritize your land management efforts and take
+          preventive measures before problems worsen.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="tour-back-6">Back</button>
+        <button class="btn btn-success" id="tour-finish">Complete Tour!</button>
       </div>
     </div>
   </div>

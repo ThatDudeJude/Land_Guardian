@@ -18,9 +18,11 @@ main_bp = Blueprint('main', __name__)
 
 def get_tour_dummy_data():
     """
-    Generate dummy data for tour demonstration.
+    Generate dummy data for tour demonstration with AI features.
     Returns dummy parcels and statistics for users taking the tour.
     """
+    predictor = TrendPredictor()
+
     dummy_parcels = [
         {
             'id': 'demo-1',
@@ -34,7 +36,10 @@ def get_tour_dummy_data():
             'risk_level': 'Low',
             'risk_label': 'Low Risk',
             'risk_color': 'green',
-            'last_updated': datetime.utcnow()
+            'last_updated': datetime.utcnow(),
+            # Add AI prediction data
+            'ai_prediction': predictor.predict_future_health(predictor.generate_historical_data(LandParcel.calculate_health_score(8, 7))),
+            'historical_data': predictor.generate_historical_data(LandParcel.calculate_health_score(8, 7))
         },
         {
             'id': 'demo-2',
@@ -48,7 +53,10 @@ def get_tour_dummy_data():
             'risk_level': 'High',
             'risk_label': 'High Risk',
             'risk_color': 'red',
-            'last_updated': datetime.utcnow()
+            'last_updated': datetime.utcnow(),
+            # Add AI prediction data
+            'ai_prediction': predictor.predict_future_health(predictor.generate_historical_data(LandParcel.calculate_health_score(4, 3))),
+            'historical_data': predictor.generate_historical_data(LandParcel.calculate_health_score(4, 3))
         },
         {
             'id': 'demo-3',
@@ -62,19 +70,28 @@ def get_tour_dummy_data():
             'risk_level': 'Medium',
             'risk_label': 'Medium Risk',
             'risk_color': 'yellow',
-            'last_updated': datetime.utcnow()
+            'last_updated': datetime.utcnow(),
+            # Add AI prediction data
+            'ai_prediction': predictor.predict_future_health(predictor.generate_historical_data(LandParcel.calculate_health_score(6, 5))),
+            'historical_data': predictor.generate_historical_data(LandParcel.calculate_health_score(6, 5))
         }
     ]
 
     # Calculate statistics from dummy data
     total_parcels = len(dummy_parcels)
     high_risk_count = sum(1 for p in dummy_parcels if p['risk_level'] == 'High')
+    medium_risk_count = sum(1 for p in dummy_parcels if p['risk_level'] == 'Medium')
     average_health = sum(p['health_score'] for p in dummy_parcels) / total_parcels
+
+    # Calculate AI insights for dummy data
+    declining_parcels = sum(1 for p in dummy_parcels if p['ai_prediction'][2] == "declining")
 
     stats = {
         'total': total_parcels,
         'high_risk': high_risk_count,
-        'average_health': round(average_health, 1)
+        'medium_risk': medium_risk_count,
+        'average_health': round(average_health, 1),
+        'declining_parcels': declining_parcels
     }
 
     return dummy_parcels, stats
@@ -98,14 +115,15 @@ def dashboard():
         if trend == "declining":
             declining_parcels += 1
 
+    # Initialize stats
+    stats = {}
+
     # Use dummy data for tour visitors with no parcels
     if came_from_tour and len(parcels) == 0:
         parcels, stats = get_tour_dummy_data()
         parcels_data = parcels  # Use dummy parcels for map
         is_first_visit = False  # Show full dashboard for tour
-        # Calculate AI insights for dummy data
-        dummy_declining = sum(1 for p in parcels if predictor.predict_future_health(predictor.generate_historical_data(p['health_score']))[2] == "declining")
-        declining_parcels = dummy_declining
+        declining_parcels = stats['declining_parcels']  # Use pre-calculated AI insights
     else:
         # Normal logic for regular users
         total_parcels = len(parcels)
@@ -134,6 +152,14 @@ def dashboard():
             } for p in parcels
         ]
         is_first_visit = len(parcels) == 0
+
+        # Calculate AI insights for regular users
+        declining_parcels = 0
+        for parcel in parcels:
+            historical = predictor.generate_historical_data(parcel.health_score)
+            _, _, trend = predictor.predict_future_health(historical)
+            if trend == "declining":
+                declining_parcels += 1
 
     map_style = current_user.preferences.get('map_style', 'satellite')
     show_tour = came_from_tour  # Only show tour for tour visitors
@@ -216,22 +242,36 @@ def parcel_detail(parcel_id):
 
     return render_template('parcel_detail.html', parcel=parcel, recommendations=recommendations)
 
-@main_bp.route('/api/health-trend/<int:parcel_id>')
+@main_bp.route('/api/health-trend/<parcel_id>')
 @login_required
 def health_trend(parcel_id):
     """
     API endpoint for parcel health trend data with AI predictions.
+    Supports both real parcel IDs and demo IDs for tour mode.
     """
-    parcel = LandParcel.query.get_or_404(parcel_id)
-    if parcel.user_id != current_user.id:
-        abort(404)
+    # Handle demo parcels for tour mode
+    if parcel_id.startswith('demo-'):
+        # Get dummy data for tour demonstration
+        dummy_parcels, _ = get_tour_dummy_data()
+        parcel_data = next((p for p in dummy_parcels if p['id'] == parcel_id), None)
+        if not parcel_data:
+            abort(404)
 
-    # Generate historical data using the predictor
-    predictor = TrendPredictor()
-    historical_scores = predictor.generate_historical_data(parcel.health_score)
+        # Use pre-calculated AI data from dummy parcel
+        historical_scores = parcel_data['historical_data']
+        predicted_score, confidence, trend = parcel_data['ai_prediction']
+    else:
+        # Handle real parcels
+        parcel = LandParcel.query.get_or_404(int(parcel_id))
+        if parcel.user_id != current_user.id:
+            abort(404)
 
-    # Get AI prediction
-    predicted_score, confidence, trend = predictor.predict_future_health(historical_scores)
+        # Generate historical data using the predictor
+        predictor = TrendPredictor()
+        historical_scores = predictor.generate_historical_data(parcel.health_score)
+
+        # Get AI prediction
+        predicted_score, confidence, trend = predictor.predict_future_health(historical_scores)
 
     # Create dates for historical data
     dates = [f"Month {i+1}" for i in range(len(historical_scores))]
