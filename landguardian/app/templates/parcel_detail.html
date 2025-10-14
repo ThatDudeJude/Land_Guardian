@@ -72,12 +72,6 @@ endblock %} {% block content %}
       <div class="card-footer">
         <div class="btn-group">
           <a
-            href="{{ url_for('main.parcel_detail', parcel_id=parcel.id) }}"
-            class="btn btn-outline-{{ parcel.risk_color }} btn-sm"
-          >
-            View Details
-          </a>
-          <a
             href="{{ url_for('main.export_csv') }}?parcel_id={{ parcel.id }}"
             class="btn btn-outline-secondary btn-sm"
           >
@@ -89,7 +83,7 @@ endblock %} {% block content %}
 
     <div class="card mt-3">
       <div class="card-header">
-        <h5 class="card-title mb-0">Health Trend (7 Days)</h5>
+        <h5 class="card-title mb-0">Health Trend</h5>
       </div>
       <div class="card-body">
         <canvas id="healthChart"></canvas>
