@@ -73,7 +73,7 @@ endblock %} {% block content %}
         <div class="btn-group">
           <a
             href="{{ url_for('main.export_csv') }}?parcel_id={{ parcel.id }}"
-            class="btn btn-outline-secondary btn-sm"
+            class="btn btn-outline-secondary btn-sm btn-fixed"
           >
             Export CSV
           </a>
@@ -125,7 +125,7 @@ endblock %} {% block content %}
               >
                 {{ rec }}
                 <button
-                  class="btn btn-sm btn-outline-success mark-implemented"
+                  class="btn btn-sm btn-outline-success btn-fixed mark-implemented"
                   data-recommendation="{{ rec }}"
                 >
                   ✓ Done
@@ -143,7 +143,7 @@ endblock %} {% block content %}
               >
                 {{ rec }}
                 <button
-                  class="btn btn-sm btn-outline-success mark-implemented"
+                  class="btn btn-sm btn-outline-success btn-fixed mark-implemented"
                   data-recommendation="{{ rec }}"
                 >
                   ✓ Done
