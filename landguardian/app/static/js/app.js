@@ -235,6 +235,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize map only if map container and data exist
     if (document.getElementById('map') && window.parcelsData) {
         initMap(window.parcelsData);
+
+        // Force map reload if coming from settings
+        if (window.cameFromSettings) {
+            // Small delay to ensure map is fully initialized
+            setTimeout(() => {
+                const mapContainer = document.getElementById('map');
+                if (mapContainer && mapContainer._leaflet_id) {
+                    // Remove existing map instance
+                    const map = window.MapManager.map;
+                    if (map) {
+                        map.remove();
+                    }
+                    // Reinitialize with new style
+                    initMap(window.parcelsData);
+                }
+            }, 100);
+        }
     }
 
     // Initialize form preview

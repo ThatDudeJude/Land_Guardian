@@ -162,7 +162,10 @@ def dashboard():
                 declining_parcels += 1
 
     map_style = current_user.preferences.get('map_style', 'satellite')
-    show_tour = came_from_tour  # Only show tour for tour visitors
+    show_tour = came_from_tour  # Only show tour for tour visitors    
+
+    # Check if user just came from settings to force map reload
+    came_from_settings = request.args.get('from_settings') == 'true'
 
     # Generate recommendation summaries for high-priority parcels
     high_risk_parcels = [p for p in parcels if isinstance(p, dict) and p.get('risk_level') == "High" or hasattr(p, 'risk_level') and p.risk_level == "High"]
@@ -446,13 +449,16 @@ def settings():
     User settings page for preferences.
     """
     if request.method == 'POST':
-        current_user.preferences['units'] = request.form['units']
-        current_user.preferences['map_style'] = request.form['map_style']
-        current_user.preferences['notifications']['email'] = 'email' in request.form
-        current_user.preferences['notifications']['browser'] = 'browser' in request.form
+        # Update preferences - ensure we work with a mutable copy
+        prefs = dict(current_user.preferences)
+        prefs['units'] = request.form['units']
+        prefs['map_style'] = request.form['map_style']
+        prefs['notifications']['email'] = 'email' in request.form
+        prefs['notifications']['browser'] = 'browser' in request.form
+        current_user.preferences = prefs        
         db.session.commit()
         flash('Settings updated successfully', 'success')
-        return redirect(url_for('main.settings'))
+        return redirect(url_for('main.dashboard', from_settings='true'))
 
     return render_template('settings.html')
 

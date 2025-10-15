@@ -381,6 +381,7 @@
   window.mapStyle = {{ map_style|tojson }};
   window.units = {{ current_user.preferences.get('units', 'metric')|tojson }};
   window.stats = {{ stats|tojson }};
+  window.cameFromSettings = {{ came_from_settings|tojson if came_from_settings is defined else false|tojson }};
 </script>
 <script>
   // Tour Manager Class
