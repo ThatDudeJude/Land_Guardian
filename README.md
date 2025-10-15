@@ -6,13 +6,18 @@
 
 LandGuardian addresses SDG 15 (Life on Land) by providing farmers, researchers, and policymakers with tools to monitor land degradation, predict future trends using AI, and implement preventive measures. The system combines traditional soil/vegetation monitoring with machine learning predictions to help combat desertification and land degradation.
 
-## ✨ Key Features (Screenshots and GIFS coming soon)
+## ✨ Key Features 
 
 ### 🏠 Dashboard & Visualization
 - **Interactive Map**: Leaflet-powered map with color-coded risk markers
+![Interactive Map Demo](/landguardian/demo_images/map_interactivity_demo.gif)
 - **Real-time Statistics**: Health scores, risk levels, and trend analysis
-- **Priority Alerts**: Highlight parcels requiring immediate attention
+![Parcel Statistics Demo](/landguardian/demo_images/parcel_statistics_demo.gif)
 - **Guided Tour**: Interactive onboarding for new users
+![Guided Tour Demo](/landguardian/demo_images/guided_tour_demo.gif)
+- **Priority Alerts**: Highlight parcels requiring immediate attention
+![Parcels Requiring Attention Highlighted Demo](/landguardian/demo_images/parcels_requiring_attention_highlighted_demo.png)
+
 
 ### 🤖 AI-Powered Predictions
 - **Machine Learning Trends**: Scikit-learn powered health score predictions
@@ -163,6 +168,8 @@ landguardian/
 ├── pytest.ini              # Test configuration
 ├── render.yaml             # Render deployment config
 ├── runtime.txt             # Python version for deployment
+├── CONTRIBUTING.md
+├── CODE_OF_CONDUCT.md
 └── README.md
 ```
 
